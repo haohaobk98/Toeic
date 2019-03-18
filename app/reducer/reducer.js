@@ -1,9 +1,27 @@
 var redux = require('redux');
 import array from './array';
 import indexArray from './indexArray';
+import username from './username';
+import notification from './notification';
+import testNumber from './testNumber';
+import listenScore from './listenScore';
+import readScore from './readScore';
+import submited from './submited';
+import BXH from './BXH';
+import numberDoTest from './numberDoTest';
+import isDone from './isDone';
 var reducer = redux.combineReducers({
-    array: array,
-    indexArray: indexArray
+    array,
+    indexArray,
+    username,
+    notification,
+    testNumber,
+    listenScore,
+    readScore,
+    submited,
+    BXH,
+    numberDoTest,
+    isDone
 });
 
 module.exports = reducer;

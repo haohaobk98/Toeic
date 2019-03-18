@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 import {connect} from 'react-redux';
-class Part2 extends Component{
+class Part4 extends Component{
     constructor(props){
         super(props)
         this.state = {
@@ -44,8 +44,8 @@ class Part2 extends Component{
     render(){
         return(
             <div>
-                <h2>Part2</h2>
-                <p>Directions: You will hear a question or statement and three responses spoken in English. They will not be printed in your test book and will be spoken only one time. Select the best response to the question or statement and mark the letter (A), (B), or (C) on your answer sheet.</p>
+                <h2>Part4</h2>
+                <p>Directions: You will hear some talks given by a single speaker. You will be asked to answer three questions about what the speaker says in each talk. Select the best response to each question and mark the letter (A), (B), (C), or (D) on your answer sheet. The talks will not be printed in your test book and will be spoken only one time.</p>
                 {
                     this.state.data.map((da,i)=>{
                         return  <div>
@@ -54,6 +54,7 @@ class Part2 extends Component{
                                      <input type="radio" name={da.number} id={da.number} value="A" onChange={this.handleRadio}/>{da.radio1} <br/>
                                     <input type="radio" name={da.number} id={da.number} value="B" onChange={this.handleRadio}/>{da.radio2}<br/>
                                     <input type="radio" name={da.number} id={da.number} value="C" onChange={this.handleRadio}/>{da.radio3} <br/>
+                                    <input type="radio" name={da.number} id={da.number} value="D" onChange={this.handleRadio}/>{da.radio4} <br/>
                                 </div>
                                 </div>
                     })
@@ -62,22 +63,21 @@ class Part2 extends Component{
         )
     }
     componentDidMount(){
-        axios.get('/getPart2')
+        axios.get('/getPart4')
         .then((res)=>{
           this.state = {
               data: res.data,
-              test: res.data[0].test
+              test: res.data[0].test // xem la de may de random de
           }
           this.setState(this.state)
         })
         .catch((err)=>console.log(err))
     }
-
 }
 
 module.exports = connect(function(state){
-    return { array: state.array,
-            indexArray: state.indexArray}
-  })(Part2);
-  
-  
+    return {
+        array: state.array,
+        indexArray: state.indexArray
+    }
+})(Part4);

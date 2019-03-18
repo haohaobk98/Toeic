@@ -5,7 +5,15 @@ function sort(a,b){
 function swap(a,b){
     [a,b] = [b,a];
 }
-var array = (state=[],action)=>{
+var AnswerArray = [];
+for(var i=0; i<200; i++){
+    AnswerArray.push({
+        value: 'a',
+        index: i+1
+    })
+}
+
+var array = (state=AnswerArray,action)=>{
     switch(action.type){
         case 'ADD_ITEM': return [...state,{value:action.item,index:action.index}];
         case 'UPDATE_ITEM': {
