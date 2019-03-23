@@ -13,7 +13,8 @@ class Part6 extends Component{
                    radio2: "",
                    radio3: "",
                    radio4: "",
-                   number: ""
+                   number: "",
+                   refer:""
                 }
             ],
             test:""
@@ -45,11 +46,11 @@ class Part6 extends Component{
         return(
             <div>
                 <h2>Part6</h2>
-                <p>Directions: Read the texts that follow. A word or phrase is missing in some of the sentences. Four answer choices are given below each of the sentences. Select the best answer to complete the text. Then mark the letter (A), (B), (C), or (D) on your answer sheet.</p>
+                <p className="para">Directions: Read the texts that follow. A word or phrase is missing in some of the sentences. Four answer choices are given below each of the sentences. Select the best answer to complete the text. Then mark the letter (A), (B), (C), or (D) on your answer sheet.</p>
                 {
                     this.state.data.map((da,i)=>{
                         return        <div key={i}>
-                                     <p>{da.refer}</p>
+                                     <p className="para">{da.refer}</p>
                                      <div className="para">{da.textQuestion}</div>                    
                                      <p>{da.number}.</p>
                                      <input type="radio" name={da.number} id={da.number}  value="A" onChange={this.handleRadio}/>{da.radio1} <br/>

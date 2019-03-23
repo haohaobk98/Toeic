@@ -160,3 +160,321 @@ li {
         display: block;
         text-align: -webkit-center; 
 }
+
+.li-right{
+    float:right;
+    margin-left: 500px;
+}
+.user-image{
+    width:30px;
+    height:30px;
+}
+
+/* LOGIN */
+body {font-family: Arial, Helvetica, sans-serif;}
+
+/* Full-width input fields */
+input[type=text], input[type=password],input[type=email] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+/* Set a style for all buttons */
+button {
+  background-color: #4fbcea;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+/* Extra styles for the cancel button */
+.cancelbtn {
+  width: auto;
+  padding: 10px 18px;
+  background-color: #f44336;
+}
+
+/* Center the image and position the close button */
+.imgcontainer {
+  text-align: center;
+  margin: 24px 0 12px 0;
+  position: relative;
+}
+
+img.avatar {
+  width: 40%;
+  border-radius: 50%;
+}
+
+.container {
+  padding: 16px;
+}
+
+span.psw {
+  float: right;
+  padding-top: 16px;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  padding-top: 60px;
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button (x) */
+.close {
+  position: absolute;
+  right: 25px;
+  top: 0;
+  color: #000;
+  font-size: 35px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: red;
+  cursor: pointer;
+}
+
+/* Add Zoom Animation */
+.animate {
+  -webkit-animation: animatezoom 0.6s;
+  animation: animatezoom 0.6s
+}
+
+@-webkit-keyframes animatezoom {
+  from {-webkit-transform: scale(0)} 
+  to {-webkit-transform: scale(1)}
+}
+  
+@keyframes animatezoom {
+  from {transform: scale(0)} 
+  to {transform: scale(1)}
+}
+
+/* Change styles for span and cancel button on extra small screens */
+@media screen and (max-width: 300px) {
+  span.psw {
+     display: block;
+     float: none;
+  }
+  .cancelbtn {
+     width: 100%;
+  }
+}
+.wrapper{
+    width: 400px;
+    height: 600px;
+    background-color: #f1f1f1;
+}
+.form-login{
+    width: 400px;
+    height: 600px;
+    padding: 10px;
+}
+/* giao dien sau khi nhan vao nut de thi */
+.comment_bai_hoc {
+    float: left;
+    line-height: 180%;
+    width: 750px;
+    margin-top: 10px;
+    font-size: 10pt;
+}
+.clear {
+    clear: both;
+}div {
+    display: block;
+}.ghichu0 {
+    width: 1000px;
+    min-height: 41px;
+    line-height: 41px;
+    margin: 12px 0px;
+    border: 1px solid #E2E2E2;
+    text-align: center;
+    margin-left: 100px;
+}h1 {
+    display: block;
+    font-size: 2em;
+    margin-block-start: 0.67em;
+    margin-block-end: 0.67em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+}h1.title_lesson {
+    font-size: 18px;
+    line-height: 20px;
+    font-weight: bold;
+}.gthieu {
+    font-size: 14px;
+    color: #181616;
+    font-weight: normal;
+    line-height: 20px;
+    margin-top: 0px;
+    cursor: default;
+    text-align:center
+}.details {
+    padding: 0 10px;
+    clear: both;
+    line-height: 180%;
+}meta {
+    display: none;
+}#toeic_start {
+    background: url(https://www.tienganh123.com/file/common/toeic/images/start.jpg) no-repeat;
+    border: 0px;
+    height: 49px;
+    width: 122px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    margin-top:20px;
+}
+element.style {
+    text-align: center;
+    color: #C42D00;
+}.toeic_content_start {
+    width: 96%;
+    margin-left: 2%;
+    margin-top: 20px;
+    text-align: justify;
+}.toeic_title {
+    background: #4fbcea;;
+    font-size: 18px;
+    height: 40px;
+    line-height: 40px;
+    color: #fff;
+    padding-left: 35px;
+    font-weight: bold;
+    display: block;
+}.toeic_box_start {
+    text-align: center;
+    padding-bottom: 15px;
+}
+.click_start{
+    text-align:center;
+     color:#C42D00;
+}
+#tickerbg,#ticker{
+
+    position: absolute;
+}
+.text-center{
+    text-align: center;
+}
+.img-timer{
+    width:100px;
+    height: 100px;  
+}
+/* radio button show question */
+.radio-wrapper{
+        display: block;
+        width: 100%;
+        background: url(https://www.tienganh123.com/file/common/toeic/images/hr_space.png) no-repeat bottom center;
+        float: left;
+        padding-bottom: 25px;
+        margin-top: 20px;
+        margin-bottom: 50px;
+        
+}
+.radio-input{
+    float: left;
+    width: 96px;
+    text-align: center;
+    margin-top: 4px;
+    margin-left: 15px;
+}
+.image-center{
+    display: block;
+    text-align: center;
+}
+.radio1{
+    margin-left:425px;
+}
+.basic_box {
+    width: 100%;
+    font-size: 11pt;
+    font-family: Tahoma, Geneva, sans-serif;
+    line-height: 190%;
+    float:left;
+}
+.toeic_index {
+    float: left;
+    width: 72px;
+    border-radius: 50px;
+    border: 1px solid #58960f;
+    text-align: center;
+    height: 32px;
+    line-height: 32px;
+    color: #58960f;
+    margin-top: 7px;
+    position: relative;
+    left: 300px;
+}
+.example{
+    margin-bottom: 50px;
+}
+.clear_part{
+    clear:both;
+}
+.para{
+    font-size: 20px;
+}
+.radio-input-part{
+    float: left;
+    text-align: center;
+    margin-top: 4px;
+    margin-left: 15px;
+}
+.toeic_ques {
+    width: 100%;
+    display: block;
+    margin: 20px 0px;
+}
+.toeic_index1 {
+    float: left;
+    width: 72px;
+    border-radius: 50px;
+    border: 1px solid #58960f;
+    text-align: center;
+    height: 32px;
+    line-height: 32px;
+    color: #58960f;
+    margin-top: 7px;
+}
+.toeic_q_title {
+    display: inline-block;
+    width: 600px;
+    line-height: 24px;
+    color: #005053;
+    float: left;
+    margin-left: 10px;
+    margin-top: 10px;
+    text-align: justify;
+}

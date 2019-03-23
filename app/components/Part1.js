@@ -51,22 +51,37 @@ class Part1 extends React.Component{
     return (
       <div>
         <h1>LISTENING TEST</h1>
-        <p>In the Listening test, you will be asked to demonstrate how well you understand spoken English. The entire Listening test will last approximately 45 minutes. There are four parts, and directions are given for each part. You must mark your answers on the separate answer sheet. Do not write your answers in your test book.</p>
+        <p className="para">In the Listening test, you will be asked to demonstrate how well you understand spoken English. The entire Listening test will last approximately 45 minutes. There are four parts, and directions are given for each part. You must mark your answers on the separate answer sheet. Do not write your answers in your test book.</p>
         <audio controls key={this.state.audio}>
                     <source src={this.state.audio} type="audio/mpeg"/>
         </audio><br/>
         <h2>Part1: </h2>
-        <p>Directions: For each question in this part, you will hear four statements about a picture in your test book. When you hear the statements, you must select the one statement that best describes what you see in the picture. Then find the number of the question on your answer sheet and mark your answer. The statements will not be printed in your test book and will be spoken only one time.</p>
+        <p className="para">Directions: For each question in this part, you will hear four statements about a picture in your test book. When you hear the statements, you must select the one statement that best describes what you see in the picture. Then find the number of the question on your answer sheet and mark your answer. The statements will not be printed in your test book and will be spoken only one time.</p>
         <Example1/>
       
          {this.state.data.map((da,i)=>{
-              return <div key={i}>
-                        <p>{da.number}.</p>
-                        <img src={da.image} height="200" width="200" alt="picture1" /><br/>
-                        <input type="radio" name={da.number} id={da.number} value="A" onChange={this.handleRadio}/>{da.radio1} <br/>
-                        <input type="radio" name={da.number} id={da.number} value="B" onChange={this.handleRadio}/>{da.radio2}<br/>
-                        <input type="radio" name={da.number} id={da.number} value="C" onChange={this.handleRadio}/>{da.radio3} <br/>
-                        <input type="radio" name={da.number} id={da.number} value="D" onChange={this.handleRadio}/>{da.radio4} <br/>
+              return <div key={i} className="basic_box">
+                        <div className="toeic_index">
+                          Câu {da.number}
+                        </div>
+                        
+                      <div className="image-center">
+                        <img src={da.image} height="300" width="300" alt="picture1" /><br/>
+                        </div>
+                        <div className="radio-wrapper">
+                        <div className="radio-input radio1">
+                        <input type="radio" name={da.number} id={da.number} value="A" onChange={this.handleRadio}/>{da.radio1}
+                        </div>
+                        <div className="radio-input">
+                        <input type="radio" name={da.number} id={da.number} value="B" onChange={this.handleRadio}/>{da.radio2}
+                        </div>
+                        <div className="radio-input">
+                        <input type="radio" name={da.number} id={da.number} value="C" onChange={this.handleRadio}/>{da.radio3}
+                        </div>
+                        <div className="radio-input">
+                        <input type="radio" name={da.number} id={da.number} value="D" onChange={this.handleRadio}/>{da.radio4}
+                        </div>
+                        </div>
                       </div>
          })}
       </div>

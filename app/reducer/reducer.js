@@ -10,6 +10,8 @@ import submited from './submited';
 import BXH from './BXH';
 import numberDoTest from './numberDoTest';
 import isDone from './isDone';
+import setSignIn from './setSignIn';
+import setSignUp from './setSignUp';
 var reducer = redux.combineReducers({
     array,
     indexArray,
@@ -21,7 +23,9 @@ var reducer = redux.combineReducers({
     submited,
     BXH,
     numberDoTest,
-    isDone
+    isDone,
+    setSignIn,
+    setSignUp
 });
 
 module.exports = reducer;

@@ -45,17 +45,25 @@ class Part2 extends Component{
         return(
             <div>
                 <h2>Part2</h2>
-                <p>Directions: You will hear a question or statement and three responses spoken in English. They will not be printed in your test book and will be spoken only one time. Select the best response to the question or statement and mark the letter (A), (B), or (C) on your answer sheet.</p>
+                <p className="para">Directions: You will hear a question or statement and three responses spoken in English. They will not be printed in your test book and will be spoken only one time. Select the best response to the question or statement and mark the letter (A), (B), or (C) on your answer sheet.</p>
                 {
                     this.state.data.map((da,i)=>{
-                        return  <div>
-                                <div key={da._id}>
-                                     <p>{da.number}.{da.textQuestion}</p>
-                                     <input type="radio" name={da.number} id={da.number} value="A" onChange={this.handleRadio}/>{da.radio1} <br/>
-                                    <input type="radio" name={da.number} id={da.number} value="B" onChange={this.handleRadio}/>{da.radio2}<br/>
-                                    <input type="radio" name={da.number} id={da.number} value="C" onChange={this.handleRadio}/>{da.radio3} <br/>
-                                </div>
-                                </div>
+                        return  <div key={i} className="basic_box">
+                        <div className="toeic_index">
+                          Câu {da.number}
+                        </div>
+                        <div className="radio-wrapper">
+                        <div className="radio-input radio1">
+                        <input type="radio" name={da.number} id={da.number} value="A" onChange={this.handleRadio}/>{da.radio1}
+                        </div>
+                        <div className="radio-input">
+                        <input type="radio" name={da.number} id={da.number} value="B" onChange={this.handleRadio}/>{da.radio2}
+                        </div>
+                        <div className="radio-input">
+                        <input type="radio" name={da.number} id={da.number} value="C" onChange={this.handleRadio}/>{da.radio3}
+                        </div>
+                      </div>
+      </div>
                     })
                 }
             </div>

@@ -183,20 +183,70 @@ app.get("/getExample1",(req,res)=>{
 // get thong tin trang chu khi co user
 app.get('/getUserInfo',(req,res)=>{
     // truy cap database de lay du lieu
+    mongoClient.connect(url,(err,db)=>{
+        if(err) throw err;
+        var dbo = db.db('toeic');
+        dbo.collection('De1').find({}).toArray((err,result)=>{
+            if(err) throw err;
+            console.log(result.length);
+            if(result.length > 1){
+                var max = 0;
+                for(var i=1; i< result.length; i++){
+                    console.log(result[i].numberoftester);
+                    if(parseInt(result[i].numberoftester) > max) max = result[i].numberoftester;
+                }
+                   var find = req.session.username;
+                   var temp = true;
+                   for(var i=1; i< result.length; i++){
+                    if(result[i].username == find){
+                        temp = false;
+                        res.send({maxValue: max,result: result[i]});
+                        break;
+                    }
+                   }
+                   if(temp == true){
+                    res.send({maxValue: max,result:null});
+                   }
+            }else{
+                console.log("2");
+                res.send({maxValue: 0,result:null});
+            }
+
+            db.close();
+        })
+    })
+})
+// tra ve so nguoi dung da chon lam bai nay 
+app.get('/numberDoTest',(req,res)=>{
+    mongoClient.connect(url,(err,db)=>{
+        if(err) throw err;
+        var dbo = db.db('toeic');
+        dbo.collection('De1').find({}).toArray((err,result)=>{
+            if(err) throw err;
+            if(result.length > 1){
+                var max = 0;
+                for(var i=1; i< result.length; i++){
+                    console.log(result[i].numberoftester);
+                    if(parseInt(result[i].numberoftester) > max) max = result[i].numberoftester;
+                }
+                max++;
+                console.log("max " + max);
+                res.send({maxValue: max});
+            }else{
+                res.send({maxValue: 0});
+            }
+
+            db.close();
+        })
+    })
 })
 // ham compare and swap
 function sort(a,b){
     return (a > b)?1:(a < b)?-1:0;
 }
 app.post('/submit',parser,(req,res)=>{
-    var {array,indexArray,testNumber,username} = req.body;
-    console.log("test number" + testNumber);
-    console.log("length of answer array: "+ array.length);
-   for(var i=0; i< array.length; i++){
-       console.log(array[i].value);
-   }
-   console.log("indexArray before sort: " + indexArray)
-   console.log("length of indecArray: " + indexArray.length);            
+    var {array,indexArray,testNumber,numberDoTest} = req.body;
+             
            // truy cap database lay ra mang dap an
            var listenPart = []; // luu cac cau tra loi dung cua phan listening
            var readPart = []; // luu cac cau tra loi dung cua phan reading
@@ -212,7 +262,7 @@ app.post('/submit',parser,(req,res)=>{
                            listenPart.push(re[0].listening[i].answer);
                        }
                    }
-                  console.log(array);
+
                    // tinh diem phan nghe
                    //for(var i=0; i<100; i++){
                        var countListen = 0;
@@ -227,13 +277,13 @@ app.post('/submit',parser,(req,res)=>{
                     // tinh diem phan doc
                     //for(var i=100; i<200; i++){
                     var countRead = 0;
-                    console.log()
                     for(var i=0; i<52; i++){
                         console.log(i + " " + array[i+100].value + " and " + readPart[i]);
                         if(array[i+100].value == readPart[i]) countRead++;
                     }
                     console.log("read" + countRead);
                     console.log("listen" + countListen);
+                    console.log(numberDoTest);
                     // anh xa diem
                     var listeningScore = 0;
                     var readingScore = 0;
@@ -248,12 +298,11 @@ app.post('/submit',parser,(req,res)=>{
                         if(err) throw err;
                         var dbo = db.db('toeic');
                         var findelement = {username: req.session.username};
-                        var update = false;
                         dbo.collection(testNumber).findOne(findelement,function(err,result){
                             if(err) throw err;
                             if(!result){
                                 console.log("new one");
-                                var element = {username:req.session.username, score:total};
+                                var element = {username:req.session.username, score:total,readScore:readingScore,listenScore: listeningScore, isdone:"Bạn đã làm bài thi này",numberoftester:numberDoTest};
                                 dbo.collection(testNumber).insertOne(element,function(err,re){
                                 if(err) throw err;
                                 // sap xep lai bang xep hang
@@ -282,7 +331,7 @@ app.post('/submit',parser,(req,res)=>{
                                 console.log(result.score);
                                 if(result.score < total){
                                     console.log("update");
-                                    var updateValue = { $set:{score: total}};
+                                    var updateValue = { $set:{score: total,readScore:readingScore,listenScore: listeningScore,numberoftester:numberDoTest}};
                                     dbo.collection(testNumber).updateOne(findelement,updateValue,function(err,re){
                                         if(err) throw err;
                                          // sap xep lai bang xep hang
@@ -311,24 +360,32 @@ app.post('/submit',parser,(req,res)=>{
                                 // neu ket qua thap hon ket qua hien tai thi chi sap xep lai bxh va gui ket qua ve
                                  // sap xep lai bang xep hang
                                  console.log("not update because score!");
-                                 var len = re.length;
-                                 for(var i=1; i<len-1; i++){
-                                     for(var j=i+1; j<len; j++){
-                                         if(re[i].score < re[j].score){
-                                             var temp = re[i];
-                                             re[i] = re[j];
-                                             re[j] = temp; 
-                                         }
-                                     }
-                                 }
-                                        var BXH=[];
+                                 // cap nhat so nguoi da lam bai thi va gui lai cho client
+                                 
+                                 var updateValue = { $set:{numberoftester:numberDoTest}};
+                                 dbo.collection(testNumber).updateOne(findelement,updateValue,function(err,re){
+                                     if(err) throw err;
+                                      // sap xep lai bang xep hang
+                                      var len = re.length;
+                                      for(var i=1; i<len-1; i++){
+                                          for(var j=i+1; j<len; j++){
+                                              if(re[i].score < re[j].score){
+                                                  var temp = re[i];
+                                                  re[i] = re[j];
+                                                  re[j] = temp; 
+                                              }
+                                          }
+                                      }
+                                     var BXH=[];
                                      for(var i=1; i< re.length; i++){
-                                          BXH.push(re[i]);
-                                        }
-                                 res.send({
-                                     listeningScore,
-                                     readingScore,
-                                     BXH
+                                         BXH.push(re[i]);
+                                     }
+                                      res.send({
+                                          listeningScore,
+                                          readingScore,
+                                          BXH
+                                      })
+                                     db.close();
                                  })
                                 }
                             }
@@ -412,8 +469,21 @@ app.post('/signup',parser,(req,res)=>{
     var {username, email, password} = req.body;
     // neu mot trong 3 truong rong thi bao chua dang ki thanh cong
     if(username == "" || email == "" || password == ""){
-        res.send("THAT_BAI");
+        res.send({title:"THAT_BAI"});
     }else{
+        // kiem tra username da ton tai hay chua
+        mongoClient.connect(url,(err,db)=>{
+            if(err) throw err;
+            var dbo = db.db('toeic');
+            var find = {username};
+            dbo.collection('user').findOne(find,(err,result)=>{
+                if(err) throw err;
+                if(result){
+                    res.send({title:"TRUNG_TEN"});
+                }
+                db.close();
+            })
+        })
         // cap nhat vao data base
         mongoClient.connect(url,(err,db)=>{
             if(err) throw err;

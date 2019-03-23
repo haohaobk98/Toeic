@@ -1,7 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {connect} from 'react-redux';
 var {Link, IndexLink} = require('react-router');
 class NotUser extends React.Component{
+  handleSignIn(){
+    var {dispatch} = this.props;
+    dispatch({type: 'OPEN'});
+  }
+  handleSignUp(){
+    var {dispatch} = this.props;
+    dispatch({type: 'SignUp'});
+  }
     render(){
         return(
             <div>
@@ -14,13 +23,13 @@ class NotUser extends React.Component{
                   <span className="icon-bar"></span>
                   <span className="icon-bar"></span>
                 </button>
-                <a  className="active" className="navbar-brand" href="#">Bootstrap CheatSheet</a>
+                <a  className="active" className="navbar-brand" href="#">English123.com</a>
               </div>
       
               <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul className="nav navbar-nav">
-                  <li ><IndexLink to="/signin">SignIn <span className="sr-only">(current)</span></IndexLink></li>
-                  <li ><Link to="/signup">SignUp</Link></li>
+                  <li ><IndexLink to="/signin" onClick={this.handleSignIn.bind(this)}>SignIn <span className="sr-only">(current)</span></IndexLink></li>
+                  <li ><Link to="/signup" onClick={this.handleSignUp.bind(this)}>SignUp</Link></li>
                   <li className="dropdown">
                     <Link href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span className="caret"></span></Link>
                     <ul className="dropdown-menu">
@@ -50,4 +59,4 @@ class NotUser extends React.Component{
     }
 }
 
-module.exports = NotUser;
+module.exports = connect()(NotUser);

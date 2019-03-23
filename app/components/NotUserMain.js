@@ -2,37 +2,33 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 import {connect} from 'react-redux';
-var Header = require('./Header');
 import {Link, IndexLink} from 'react-router';
 
-class UserMain extends React.Component{
+class NotUserMain extends React.Component{
     constructor(props){
         super(props)
         this.state={
             readScore: 0,
             listenScore: 0, 
             isDone: "Bạn chưa làm bài thi này",
-            numberDoTest:0,
-            total:0
+            numberDoTest:0
         }
     }
     handleButton(e){
         e.preventDefault();
-        var {dispatch} = this.props;
-        axios.get('/numberDoTest')
-        .then((res)=>{
-            dispatch({type:'GET_NUMBER_DO_TEST',value: res.data.maxValue});
-        })
-        .catch((err)=>console.log(err))
-       
+        var {username} = this.props;
+        if(username == null){
+            alert("you have to sign in or sign up first");
+        }
     }
     render(){
+        var total = parseInt(this.state.listenScore) + parseInt(this.state.readScore);
         return( <div>            
                   <ul className="list_lesson_toeic">
                   <li className="even">
         <div className="to_unit_left">
             <div className="to_unit_img">
-                <Link onClick={this.handleButton.bind(this)} to='/De1' title="TOEIC Full Test 1">
+                <Link to='/De1' title="TOEIC Full Test 1">
                     <img src="https://noidung.tienganh123.com/file/luyen-thi-toeic//fulltests/full-test-2.jpg" width="118px" height="98px" alt="TOEIC Full Test 1"/>
                 </Link>
             </div>
@@ -55,7 +51,7 @@ class UserMain extends React.Component{
                     <div className="to_unit_info_box">
             <div className="to_test_info_top">
                 Tổng điểm                
-                <br/><span className="to_test_info_top_score"> {this.state.total}/990</span>
+                <br/><span className="to_test_info_top_score"> {total}/990</span>
             </div>
             <div className="to_test_info_middle">
                 Reading<br/> <span className="to_test_info_middle_score">{this.state.readScore}</span>
@@ -79,23 +75,10 @@ class UserMain extends React.Component{
     componentDidMount(){
        axios.get('/getUserInfo')
        .then((res)=>{
-            if(res.data.result != null){
-             
-                this.state={
-                    readScore: res.data.result.readScore,
-                    listenScore: res.data.result.listenScore, 
-                    isDone: res.data.result.isdone,
-                    numberDoTest:res.data.maxValue,
-                    total: res.data.result.score
-                }
-                this.setState(this.state)
-            }else{
-               
-                this.state={
-                    numberDoTest:res.data.maxValue
-                }
-                this.setState(this.state)
-            }
+        this.state={
+            numberDoTest:res.data.maxValue
+        }
+        this.setState(this.state)
        })
        .catch((err)=>console.log(err))
     }
@@ -109,7 +92,7 @@ module.exports = connect(function(state){
         isDone: state.isDone,
         numberDoTest: state.numberDoTest
     }
-})(UserMain);
+})(NotUserMain);
 
 
 

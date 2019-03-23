@@ -15,12 +15,13 @@ class AllPart extends React.Component{
   }
   handleSubmit(e){
     e.preventDefault();
-    var{array,indexArray,testNumber,dispatch,username} = this.props;
+    var{array,indexArray,testNumber,dispatch,numberDoTest} = this.props;
+    console.log(numberDoTest);
     // up to here thi mang array chua cac cau tra loi ra dung
     // mang index array thi thieu cau tra loi ma ban vua lam, chon cau 1 va 200 and submit thi mang chi co moi 1
     console.log(testNumber);
     console.log("indexArray while submit " + indexArray);
-    axios.post('/submit',{array,indexArray,testNumber})
+    axios.post('/submit',{array,indexArray,testNumber,numberDoTest})
     .then((res)=>{
       if(res.data.title == "NOT_DONE"){
         console.log("Ban chua hoan thanh bai thi!");
@@ -71,8 +72,16 @@ class AllPart extends React.Component{
             <div>
                 <form onSubmit={this.handleSubmit}>
                 {/* <Timer /> */}
-                <Part1 />
-                <Part6 />
+               <div className="clear_part"> <Part1 /></div>
+               <div className="clear_part"> <Part2 /></div>
+               <div className="clear_part"><Part3/></div>
+               <div className="clear_part"> <Part6 /></div>
+               <div></div>
+               <div></div>
+               <div></div>
+               
+               
+               
             <button className="button">Submit</button>
             </form>
             </div>
@@ -89,7 +98,8 @@ module.exports = connect(function(state){
           listenScore: state.listenScore, 
           submited: state.submited,
           username: state.username,
-          BXH: state.BXH
+          BXH: state.BXH,
+          numberDoTest: state.numberDoTest
         }
 })(AllPart);
 

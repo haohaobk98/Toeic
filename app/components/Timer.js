@@ -11,7 +11,7 @@ import axios from 'axios';
          super(props)
          this.state = {
              second: '00',
-             minute: '01',
+             minute: '120',
              started: false
          }
          this.secondsRemaining; 
@@ -22,7 +22,7 @@ import axios from 'axios';
      }
      tick() {
 
-      var {submited,indexArray,array,testNumber,dispatch,readScore,listenScore} = this.props;
+      var {submited,indexArray,array,testNumber,dispatch,numberDoTest} = this.props;
       if(submited)  clearInterval(this.intervalHandle);
         var min = Math.floor(this.secondsRemaining / 60);
         var sec = this.secondsRemaining - (min * 60);
@@ -43,7 +43,7 @@ import axios from 'axios';
         if (min === 0 & sec === 30) {
          clearInterval(this.intervalHandle);
         alert("het time!")
-          axios.post('./submit',{array,indexArray,testNumber})
+          axios.post('./submit',{array,indexArray,testNumber,numberDoTest})
           .then((res)=>{
             console.log(res.data.BXH.length)
             dispatch({type:'SUBMITED'});
@@ -76,9 +76,33 @@ import axios from 'axios';
        }else{
         return(
           <div>
-              <Time  minute={this.state.minute} second={this.state.second} />
-               <button onClick={this.startCountDown}>Start</button> 
-          </div>
+            <div className="text-center">
+            <img src="http://icons.iconarchive.com/icons/martz90/circle/256/timer-icon.png" className="img-timer" />
+            <Time  minute={this.state.minute} second={this.state.second} />  
+            </div>
+           
+    <div className="comment_bai_hoc clear">  
+        <div className="ghichu0 clear bo_goc">
+        <h1 className="title_lesson">TOEIC Full Test 1</h1>
+    </div>
+    </div>
+    <br></br>
+
+    <div className="details">
+        <span id="fulltest"></span>
+
+ <div className="toeic_box_start">
+ <h2 className="gthieu">Người học làm bài thi mô phỏng bài thi TOEIC thực tế. Bài thi chỉ có trên TiengAnh123.Com!</h2>
+     <div className="toeic_title">Full Test 1</div>
+    <div className="toeic_content_start">Chào mừng các bạn đến với đề thi thử TOEIC trong chương trình Luyện thi TOEIC online của TiếngAnh123.Com! Đây là bài thi mô phỏng dạng đề thi TOEIC thực tế do đội ngũ giáo viên của TiếngAnh123.Com kì công biên soạn. Bài làm của các bạn sẽ được chấm điểm và thông báo kết quả ngay sau khi các bạn nộp bài.</div>
+    <div className="space20"></div>
+    <div className="click_start">Bạn hãy click vào nút Start bên dưới để bắt đầu làm bài. Chúc các bạn đạt điểm số thật cao!</div>
+    <div className="space20"></div>
+    <button type="button" id="toeic_start" onClick={this.startCountDown}></button>
+ </div>
+
+      </div>
+      </div>
       )
        }
          
@@ -94,5 +118,6 @@ import axios from 'axios';
      readScore: state.readScore,
      listenScore: state.listenScore, 
      array: state.array,
+     numberDoTest: state.numberDoTest
    }
  })(Timer);

@@ -20,13 +20,14 @@ class Example1 extends Component{
     }
     render(){
         return(
-            <div>  
-                            <div >
-                                <p>{this.state.data.number}</p>
-                                <img src={this.state.data.image} height="200" width="200" alt="picture1" /><br/>
-                             </div>
-                        
-            </div>
+             <div className="basic_box">
+             <div className="toeic_index">
+             {this.state.data.number}
+              </div >
+                 <div className="image-center example">
+                 <img src={this.state.data.image} height="300" width="300" alt="picture1" /><br/>
+                 </div>
+              </div>
         )
     }
     componentDidMount(){

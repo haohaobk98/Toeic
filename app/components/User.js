@@ -16,7 +16,7 @@ class User extends React.Component{
                   <span className="icon-bar"></span>
                   <span className="icon-bar"></span>
                 </button>
-                <a  className="active" className="navbar-brand" href="#">Bootstrap CheatSheet</a>
+                <a  className="active" className="navbar-brand" href="#">English123.com</a>
               </div>
       
               <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -33,17 +33,17 @@ class User extends React.Component{
                       <li><a href="#">One more separated link</a></li>
                     </ul>
                   </li>
-                  <li ><Link to="/signup">{username}</Link></li>
+                  <li className="li-right"><a href="#"><img className="user-image" src="https://giasutoeic.com/static/RealEdu/images/user_icon.png"/> {username}</a></li>
                 </ul>
               </div>
               
             </div>
           </nav>
-              <div class="jumbotron text-center">
-                <div class="container">
+              <div className="jumbotron text-center">
+                <div className="container">
                   <h1>Welcome To My Website</h1>
                   <p>English - Open Your World</p>
-                  <a href="#" class="btn btn-primary">Read More</a>
+                  <a href="#" className="btn btn-primary">Read More</a>
                 </div>
               </div>
             </div>
