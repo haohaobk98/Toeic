@@ -3,7 +3,7 @@
     font-weight: 600;
 }
 body{
-    font-family: roboto-regular;
+    
     font-weight: 400;
     line-height: 25px;
     font-size: 1.3em;
@@ -20,6 +20,8 @@ body{
     list-style: none;
     margin: 0px;
     padding: 0px;
+    border: 1px solid #0081a1;
+    margin:3px 0 0 3px;
 }
 .even {
     background-color: rgba(3, 169, 244, 0.1);
@@ -134,6 +136,8 @@ li {
     border-top: 1px dotted #bebebe;
     color: #6a6a6a;
     background: #f0f0f0;
+    border-left: 1px solid  #4fbcea;
+    border-radius: 5px;
 }
 .to_yourscore_top {
     width: 100%;
@@ -156,7 +160,7 @@ li {
     padding-top: 8px;
 }
 .abc{
-        /*line-height: 0px;*/
+        color:#2e6da4;
         display: block;
         text-align: -webkit-center; 
 }
@@ -181,6 +185,7 @@ input[type=text], input[type=password],input[type=email] {
   display: inline-block;
   border: 1px solid #ccc;
   box-sizing: border-box;
+  font-size: 23px;
 }
 
 /* Set a style for all buttons */
@@ -457,6 +462,9 @@ element.style {
     display: block;
     margin: 20px 0px;
 }
+.toeic_ques::after{
+    clear: both;
+}
 .toeic_index1 {
     float: left;
     width: 72px;
@@ -469,12 +477,302 @@ element.style {
     margin-top: 7px;
 }
 .toeic_q_title {
-    display: inline-block;
+    /* display: inline-block; */
     width: 600px;
     line-height: 24px;
     color: #005053;
     float: left;
     margin-left: 10px;
     margin-top: 10px;
+    font-size: 13pt;
     text-align: justify;
+}
+.toeic_q_title1 {
+    /* display: inline-block; */
+    width: 1000px;
+    line-height: 24px;
+    color: #005053;
+    float: left;
+    margin-left: 10px;
+    margin-top: 10px;
+    font-size: 13pt;
+    text-align: justify;
+}
+.space10 {
+    height: 10px;
+    clear: both;
+    background: url(https://www.tienganh123.com/file/common/toeic/images/hr_space.png) no-repeat bottom center;
+}
+.space11{
+    margin-bottom: 20px;
+}
+.wrapper-radiobuton{
+    width: 80%;
+    margin-left: 20%;
+    float: left;
+    padding-bottom: 15px;
+    margin-top: 20px;
+    display: block;
+}
+.toeic_col {
+    float: left;
+    margin-bottom: 10px;
+    width: 50%;
+    font-size: 12pt;
+    
+}
+.direction-part{
+    color:#337ab7;
+}
+.button-submit{
+    width: 30%;
+    display: block;
+    text-align: center;
+    margin: 0 auto;
+}
+.BXH{
+    float:left;
+    width: 400px;
+    min-height: 90px;
+    background: #fff;
+    border: 1px solid #4fbcea;
+    border-radius: 6px;
+    margin: 18px 10px 15px 20px;
+    position: relative;
+    font-size: 12px;
+    text-align: center;
+}
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  td, th {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+  }
+
+  tr:nth-child(even) {
+    background-color: #dddddd;
+  }
+
+  /* after submit */
+  .toda_box {
+    width: 730px;
+    margin: 10px 5px;
+    float: left;
+}.toda_ketqua_box {
+    width: 100%;
+    min-height: 200px;
+    border-radius: 6px;
+    background: #ffffff;
+    overflow: hidden;
+    box-shadow: 1px 2px 4px #9a9a9a;
+    margin-top: 20px;
+    margin-left:230px;
+}
+.toda_ketqua_box::after{
+    clear:both;
+}
+.toda_ketqua_title {
+    width: 100%;
+    height: 33px;
+    line-height: 33px;
+    background: url(https://www.tienganh123.com/file/common/toeic/images/toda_img_title.jpg) left top repeat-x;
+    font-size: 16px;
+    text-align: center;
+    font-weight: bold;
+}.toda_ketqua_content {
+    margin: 15px auto;
+    width: 470px;
+}.toda_ketqua_ct_left {
+    width: 280px;
+    float: left;
+}.toda_left_row {
+    width: 100%;
+    line-height: 33px;
+    height: 33px;
+    float: left;
+    border-bottom: 1px solid #ebebeb;
+}
+.toda_left_row_l {
+    width: 50%;
+    margin-left: 10%;
+    float: left;
+    text-align: left;
+}
+.toda_left_row_r {
+    width: 30%;
+    margin-right: 10%;
+    float: right;
+    text-align: right;
+    font-weight: bold;
+}.toda_ketqua_ct_right {
+    width: 160px;
+    float: right;
+}.toda_bt_save {
+    width: 140px;
+    height: 32px;
+    line-height: 32px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    padding-left: 12px;
+    border: 1px solid #f78e0a;
+    background: url(https://www.tienganh123.com/file/common/toeic/images/toda_bt_bg.png) left top no-repeat;
+    text-align: center;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}.toda_bt_view {
+    width: 140px;
+    background: url(https://www.tienganh123.com/file/common/toeic/images/toda_bt_bg.png) left bottom no-repeat;
+    color: #5a5a5a;
+    border: 1px solid #b8b8b8;
+}
+.answer-detail{
+    clear:both;
+    margin-top:30px;
+    margin-left: 230px;
+    width: 100%;
+}
+#bs-example-navbar-collapse-1{
+    float:right;
+}
+.btn-header{
+    background-color: #f1f1f1;
+    margin-left:5px;
+    margin-right: 5px;
+    border: 1px solid #f1f1f1;
+    border-radius: 6px;
+}
+link:hover{
+    text-decoration: none;
+}
+.image-title{
+    width: 1200px;
+    height: 650px;
+    box-shadow: 1px 1px 1px 1px #888888;
+    border: 1px solid #f1f1f1;
+    border-radius: 4px;
+}
+.image-footer{
+    box-shadow: 1px 1px 1px 1px #888888;
+    border: 1px solid #f1f1f1;
+    border-radius: 4px;
+}
+
+
+/* footer */
+
+.footer-page{
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    clear: both;
+    margin-top:100px;
+}
+.search-text{
+	margin-top:50px;
+	background-color: rgba(3, 169, 244, 0.1);
+	padding-top:60px;
+	padding-bottom:60px;
+}
+	
+.search-text .input-search{
+	height:45px;
+	width:40%;
+	padding-left:20px;
+    color:#333;
+} 
+
+.search-text .btn-search{
+    background: #4fbcea;
+    border:none;
+	color:#000;
+	height: 45px;
+    width: 80px;
+}
+
+.search-text h4{
+    color: #000;
+    font-weight: 700;
+}
+
+footer{
+     background-color: #4fbcea;
+     padding:30px 0px;
+}	       
+
+.logo{
+    color:#FFF;
+    font-weight:700;
+    font-size:30px;
+}
+
+.address span , .menu span{
+   color: #FFF; 
+   font-weight: bold; 
+   border-bottom: 1px solid #c7c7c7; 
+   padding:10px 0px;
+   display: block;
+   text-transform: uppercase;
+   font-size: 16px;
+   letter-spacing: 3px;
+}
+ 
+.address li a , .menu li a{
+    color:#FFF;
+    letter-spacing: 3px;
+    text-decoration:none;
+    font-size:14px;
+}
+
+.address li, .menu li{
+    margin:20px 0px;
+    list-style: none;
+}
+
+.address li a:hover , .menu li a:hover{
+    color: #da3e44;
+    -webkit-transition: all 1s ease-in-out;
+    -moz-transition: all 1s ease-in-out;
+    -o-transition: all 1s ease-in-out;
+    transition: all 1s ease-in-out;
+}
+
+.address .fa{
+    color: #da3e44;
+    margin-right: 10px;
+    font-size:18px;
+}
+.active{
+    color:#f1f1f1;
+    
+}
+#true{
+ background-color: #f1f1f1;
+ color: green;
+}
+
+#yes{
+    background-color: #f1f1f1;
+ color: green;
+}
+.deletebutton{
+    float: left;
+    margin-top:60px;
+}
+.delete{
+    color: #000;}
+
+textarea{
+    height: 200px;
+    width: 100%;
+}
+.add_forum{
+    font-size: 25px;
+}
+table, td, tr, th{
+    border: 1px solid  #4fbcea;
 }

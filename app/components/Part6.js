@@ -46,18 +46,32 @@ class Part6 extends Component{
         return(
             <div>
                 <h2>Part6</h2>
-                <p className="para">Directions: Read the texts that follow. A word or phrase is missing in some of the sentences. Four answer choices are given below each of the sentences. Select the best answer to complete the text. Then mark the letter (A), (B), (C), or (D) on your answer sheet.</p>
+                <p className="para"><span className="direction-part">Directions </span>: Read the texts that follow. A word or phrase is missing in some of the sentences. Four answer choices are given below each of the sentences. Select the best answer to complete the text. Then mark the letter (A), (B), (C), or (D) on your answer sheet.</p>
                 {
                     this.state.data.map((da,i)=>{
-                        return        <div key={i}>
-                                     <p className="para">{da.refer}</p>
-                                     <div className="para">{da.textQuestion}</div>                    
-                                     <p>{da.number}.</p>
-                                     <input type="radio" name={da.number} id={da.number}  value="A" onChange={this.handleRadio}/>{da.radio1} <br/>
-                                    <input type="radio" name={da.number} id={da.number} value="B" onChange={this.handleRadio}/>{da.radio2}<br/>
-                                    <input type="radio" name={da.number} id={da.number} value="C" onChange={this.handleRadio}/>{da.radio3} <br/>
-                                    <input type="radio" name={da.number} id={da.number} value="D" onChange={this.handleRadio}/>{da.radio4} <br/>
-                                </div>
+                        return<div key={i} className="container">
+                        <p className="para">{da.refer}</p>
+                        <div className="toeic_ques toeic_ques_col">
+                            <div className="toeic_index1">Câu {da.number}</div>
+                            <div className="toeic_q_title1">{da.textQuestion}</div>
+                        </div>
+                        
+                       <div className="wrapper-radiobuton">
+                            <div className="toeic_radio toeic_col">
+                            <input type="radio" name={da.number} id={da.number} value="A" onChange={this.handleRadio}/>{da.radio1} 
+                            </div>
+                            <div className="toeic_radio toeic_col">
+                            <input type="radio" name={da.number} id={da.number}  value="B" onChange={this.handleRadio}/>{da.radio2}
+                            </div>
+                            <div className="toeic_radio toeic_col">
+                            <input type="radio" name={da.number} id={da.number} value="C" onChange={this.handleRadio}/>{da.radio3}
+                            </div>
+                            <div className="toeic_radio toeic_col">
+                            <input type="radio" name={da.number} id={da.number} value="D" onChange={this.handleRadio}/>{da.radio4} </div>
+                        
+                            </div>
+                            <div className="space10 space11"></div>
+                        </div>
                                 
                     })
                 }
@@ -65,7 +79,8 @@ class Part6 extends Component{
         )
     }
     componentDidMount(){
-        axios.get('/getPart6')
+        var {testNumber} = this.props;
+        axios.post('/getPart6',{testNumber})
         .then((res)=>{
           this.state = {
               data: res.data,
@@ -80,6 +95,7 @@ class Part6 extends Component{
 module.exports = connect(function(state){
     return {
         array: state.array,
-        indexArray: state.indexArray
+        indexArray: state.indexArray,
+        testNumber: state.testNumber
     }
 })(Part6);

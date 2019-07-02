@@ -11,7 +11,7 @@ import axios from 'axios';
          super(props)
          this.state = {
              second: '00',
-             minute: '120',
+             minute: '10',
              started: false
          }
          this.secondsRemaining; 
@@ -21,11 +21,13 @@ import axios from 'axios';
         
      }
      tick() {
-
+      var {dispatch} = this.props;
       var {submited,indexArray,array,testNumber,dispatch,numberDoTest} = this.props;
       if(submited)  clearInterval(this.intervalHandle);
         var min = Math.floor(this.secondsRemaining / 60);
         var sec = this.secondsRemaining - (min * 60);
+      dispatch({type:'CHANGE_MINUTE',minute: (119 - parseInt(min))});
+      dispatch({type:'CHANGE_SECOND',second: (60 - parseInt(sec))});
         this.setState({
           minute: min,
           second: sec
@@ -45,11 +47,9 @@ import axios from 'axios';
         alert("het time!")
           axios.post('./submit',{array,indexArray,testNumber,numberDoTest})
           .then((res)=>{
-            console.log(res.data.BXH.length)
             dispatch({type:'SUBMITED'});
             dispatch({type:'GET_LISTEN_SCORE',score:res.data.listeningScore})
             dispatch({type:'GET_READ_SCORE',score:res.data.readingScore})
-            dispatch({type:'GET_BXH',bxh:res.data.BXH})
           })
           .catch((err)=>console.log(err))
         }
@@ -69,7 +69,10 @@ import axios from 'axios';
        if(this.state.started){
         return(
           <div>
-             {html}
+            <div className="text-center">
+            
+            {html}
+            </div>
                <AllPart/>
           </div>
       )
@@ -77,7 +80,6 @@ import axios from 'axios';
         return(
           <div>
             <div className="text-center">
-            <img src="http://icons.iconarchive.com/icons/martz90/circle/256/timer-icon.png" className="img-timer" />
             <Time  minute={this.state.minute} second={this.state.second} />  
             </div>
            
@@ -118,6 +120,8 @@ import axios from 'axios';
      readScore: state.readScore,
      listenScore: state.listenScore, 
      array: state.array,
-     numberDoTest: state.numberDoTest
+     numberDoTest: state.numberDoTest,
+     changeMinute: state.changeMinute,
+     changeSecond: state.changeSecond
    }
  })(Timer);

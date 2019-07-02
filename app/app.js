@@ -8,7 +8,6 @@ var Main = require('./components/Main');
 var Homepage = require('./components/Homepage');
 var SignIn = require('./components/SignIn');
 var SignUp = require('./components/SignUp');
-var AllPart = require('./components/AllPart');
 var Timer = require('./components/Timer');
 function requireUser(nextState,replace,next){
   if(store.getState().username == null){
@@ -25,6 +24,10 @@ ReactDOM.render(
         <Route path="signup" component={SignUp}/>
         <Route path="De1" component={Timer} onEnter={requireUser}/>
         <Route path="De2" component={Timer} onEnter={requireUser}/>
+        <Route path="De3" component={Timer} onEnter={requireUser}/>
+        <Route path="De4" component={Timer} onEnter={requireUser}/>
+        <Route path="De5" component={Timer} onEnter={requireUser}/>
+        <Route path="De6" component={Timer} onEnter={requireUser}/>
       </Router>
    </Router>
   </Provider>,

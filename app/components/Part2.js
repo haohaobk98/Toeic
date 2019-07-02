@@ -45,7 +45,7 @@ class Part2 extends Component{
         return(
             <div>
                 <h2>Part2</h2>
-                <p className="para">Directions: You will hear a question or statement and three responses spoken in English. They will not be printed in your test book and will be spoken only one time. Select the best response to the question or statement and mark the letter (A), (B), or (C) on your answer sheet.</p>
+                <p className="para"><span className="direction-part">Directions </span>: You will hear a question or statement and three responses spoken in English. They will not be printed in your test book and will be spoken only one time. Select the best response to the question or statement and mark the letter (A), (B), or (C) on your answer sheet.</p>
                 {
                     this.state.data.map((da,i)=>{
                         return  <div key={i} className="basic_box">
@@ -70,7 +70,8 @@ class Part2 extends Component{
         )
     }
     componentDidMount(){
-        axios.get('/getPart2')
+        var {testNumber} = this.props;
+        axios.post('/getPart2',{testNumber})
         .then((res)=>{
           this.state = {
               data: res.data,
@@ -85,7 +86,9 @@ class Part2 extends Component{
 
 module.exports = connect(function(state){
     return { array: state.array,
-            indexArray: state.indexArray}
+            indexArray: state.indexArray,
+            testNumber: state.testNumber        
+        }
   })(Part2);
   
   

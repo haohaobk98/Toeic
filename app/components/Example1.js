@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
+import {connect} from 'react-redux';
 class Example1 extends Component{
     constructor(props){
         super(props)
@@ -31,7 +32,8 @@ class Example1 extends Component{
         )
     }
     componentDidMount(){
-        axios.get('/getExample1')
+        var {testNumber} = this.props;
+        axios.post('/getExample1',{testNumber})
         .then((res)=>{
             
             this.setState({data: res.data})
@@ -42,4 +44,8 @@ class Example1 extends Component{
 
 }
 
-module.exports = Example1;
+module.exports = connect(function(state){
+    return{
+        testNumber: state.testNumber
+    }
+})(Example1);

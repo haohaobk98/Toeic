@@ -15,18 +15,19 @@ class Part1 extends React.Component{
         number:""
       }],
       audio:"",
-      test:""
+      test:"",
+      choose:false
     }
     this.handleRadio = this.handleRadio.bind(this);
   }
  
   handleRadio(e){
+    
     var number = e.target.name;
     var index= e.target.id;
     var value = e.target.value;
-    var {array,dispatch,indexArray,testNumber} = this.props;
-    console.log(this.state.test)  
-    dispatch({type:'GET_TEST_NUMBER',number: this.state.test})
+    this.setState({choose: true});
+    var {array,dispatch} = this.props;
     // sau khi thuc hien dispatch thi chua lam anh huong den testnumber, phai lan thu 2 kich hoat su kien thi moi thuc su tac dong den.
     axios.post('/checkIndexExist',{index,array,value,number})
     .then((res)=>{
@@ -48,6 +49,8 @@ class Part1 extends React.Component{
   }
   
   render(){
+    var {colorAnswer} = this.props;
+    var class1 = colorAnswer == false? "no": "yes"
     return (
       <div>
         <h1>LISTENING TEST</h1>
@@ -56,7 +59,7 @@ class Part1 extends React.Component{
                     <source src={this.state.audio} type="audio/mpeg"/>
         </audio><br/>
         <h2>Part1: </h2>
-        <p className="para">Directions: For each question in this part, you will hear four statements about a picture in your test book. When you hear the statements, you must select the one statement that best describes what you see in the picture. Then find the number of the question on your answer sheet and mark your answer. The statements will not be printed in your test book and will be spoken only one time.</p>
+        <p className="para"> <span className="direction-part">Directions </span>: For each question in this part, you will hear four statements about a picture in your test book. When you hear the statements, you must select the one statement that best describes what you see in the picture. Then find the number of the question on your answer sheet and mark your answer. The statements will not be printed in your test book and will be spoken only one time.</p>
         <Example1/>
       
          {this.state.data.map((da,i)=>{
@@ -69,17 +72,17 @@ class Part1 extends React.Component{
                         <img src={da.image} height="300" width="300" alt="picture1" /><br/>
                         </div>
                         <div className="radio-wrapper">
-                        <div className="radio-input radio1">
-                        <input type="radio" name={da.number} id={da.number} value="A" onChange={this.handleRadio}/>{da.radio1}
+                        <div className="radio-input radio1" id={class1}>
+                        <input type="radio" name={da.number} id={da.number}  value="A" onChange={this.handleRadio}/>{da.radio1}
                         </div>
-                        <div className="radio-input">
-                        <input type="radio" name={da.number} id={da.number} value="B" onChange={this.handleRadio}/>{da.radio2}
+                        <div className="radio-input" id={class1}>
+                        <input type="radio"  name={da.number} id={da.number} value="B" onChange={this.handleRadio}/>{da.radio2}
                         </div>
-                        <div className="radio-input">
-                        <input type="radio" name={da.number} id={da.number} value="C" onChange={this.handleRadio}/>{da.radio3}
+                        <div className="radio-input" id={class1}>
+                        <input type="radio"  name={da.number} id={da.number} value="C" onChange={this.handleRadio}/>{da.radio3}
                         </div>
-                        <div className="radio-input">
-                        <input type="radio" name={da.number} id={da.number} value="D" onChange={this.handleRadio}/>{da.radio4}
+                        <div className="radio-input" id={class1} >
+                        <input type="radio"  name={da.number} id={da.number} value="D" onChange={this.handleRadio}/>{da.radio4}
                         </div>
                         </div>
                       </div>
@@ -88,13 +91,15 @@ class Part1 extends React.Component{
     )
   }
   componentDidMount(){
-    axios.get("/getPart1")
+    var {testNumber} = this.props;
+    axios.post("/getPart1",{testNumber})
     .then((res)=>{
       this.state={
         data: res.data,
         audio: res.data[0].audio,
         test: res.data[0].test
     }
+   
      this.setState(this.state)
     })
     .catch((err)=> console.log(err))
@@ -104,7 +109,8 @@ class Part1 extends React.Component{
 module.exports = connect(function(state){
   return { array: state.array,
           indexArray: state.indexArray,
-          testNumber: state.testNumber
+          testNumber: state.testNumber,
+          colorAnswer: state.colorAnswer
         }
 })(Part1);
 

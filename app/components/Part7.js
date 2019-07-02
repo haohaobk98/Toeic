@@ -14,7 +14,8 @@ class Part7 extends Component{
                    radio3: "",
                    radio4: "",
                    number: "",
-                   textAfterNumber: ""
+                   textAfterNumber: "",
+                   refer:""
                 }
             ],
             test:""
@@ -46,27 +47,40 @@ class Part7 extends Component{
         return(
             <div>
                 <h2>Part7</h2>
-                <p>Directions: In this part you will read a selection of texts, such as magazine and newspaper articles, letters, and advertisements. Each text is followed by several questions. Select the best answer for each question and mark the letter (A), (B), (C), or (D) on your answer sheet.</p>
+                <p className="para"><span className="direction-part">Directions </span>: In this part you will read a selection of texts, such as magazine and newspaper articles, letters, and advertisements. Each text is followed by several questions. Select the best answer for each question and mark the letter (A), (B), (C), or (D) on your answer sheet.</p>
                 {
                     this.state.data.map((da,i)=>{
-                        return  <div>
-                                <div key={da._id}>
-                                     <p>{da.refer}</p>
-                                     <div className="para">{da.textQuestion}</div>                    
-                                     <p>{da.number}. {da.textAfterNumber}</p>
-                                     <input type="radio" name={da.number} id={da.number} value="A" onChange={this.handleRadio}/>{da.radio1} <br/>
-                                    <input type="radio" name={da.number} id={da.number} checked="" value="B" onChange={this.handleRadio}/>{da.radio2}<br/>
-                                    <input type="radio" name={da.number} id={da.number} value="C" onChange={this.handleRadio}/>{da.radio3} <br/>
-                                    <input type="radio" name={da.number} id={da.number} value="D" onChange={this.handleRadio}/>{da.radio4} <br/>
-                                </div>
-                                </div>
+                        return  <div key={i} className="container">
+                        <p className="para">{da.refer}</p>
+                        <div className="toeic_ques toeic_ques_col">
+                            <div className="toeic_index1">Câu {da.number}</div>
+                            <div className="toeic_q_title1">{da.textQuestion}</div>
+                        </div>
+                        
+                       <div className="wrapper-radiobuton">
+                            <div className="toeic_radio toeic_col">
+                            <input type="radio" name={da.number} id={da.number} value="A" onChange={this.handleRadio}/>{da.radio1} 
+                            </div>
+                            <div className="toeic_radio toeic_col">
+                            <input type="radio" name={da.number} id={da.number}  value="B" onChange={this.handleRadio}/>{da.radio2}
+                            </div>
+                            <div className="toeic_radio toeic_col">
+                            <input type="radio" name={da.number} id={da.number} value="C" onChange={this.handleRadio}/>{da.radio3}
+                            </div>
+                            <div className="toeic_radio toeic_col">
+                            <input type="radio" name={da.number} id={da.number} value="D" onChange={this.handleRadio}/>{da.radio4} </div>
+                        
+                            </div>
+                            <div className="space10 space11"></div>
+                        </div>
                     })
                 }
             </div>
         )
     }
     componentDidMount(){
-        axios.get('/getPart7')
+        var {testNumber} = this.props;
+        axios.post('/getPart7',{testNumber})
         .then((res)=>{
           this.state = {
               data: res.data,
@@ -81,6 +95,7 @@ class Part7 extends Component{
 module.exports = connect(function(state){
     return {
         array: state.array,
-        indexArray: state.indexArray
+        indexArray: state.indexArray,
+        testNumber: state.testNumber
     }
 })(Part7);

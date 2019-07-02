@@ -2,7 +2,20 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 var {Link, IndexLink} = require('react-router');
 import {connect} from 'react-redux';
+import Picture from './Picture';
+import axios from 'axios';
 class User extends React.Component{
+  logout(e){
+    var {dispatch} = this.props;
+    e.preventDefault();
+    axios.get('/logout')
+    .then((res)=>{
+      if(res.data.title == 'LOGOUT'){
+        dispatch({type:'LOGOUT'})
+      }
+    })
+    .catch((err)=>console.log(err))
+  }
     render(){
         var {username} = this.props;
         return(
@@ -16,36 +29,20 @@ class User extends React.Component{
                   <span className="icon-bar"></span>
                   <span className="icon-bar"></span>
                 </button>
-                <a  className="active" className="navbar-brand" href="#">English123.com</a>
+                <a href="#"><img className="navbar-brand" width="400" height="150" src="https://data.tienganh123.com/images/v2/home/logo.png" /></a> 
               </div>
       
               <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul className="nav navbar-nav">
-                  <li   className="dropdown">
-                    <Link href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span className="caret"></span></Link>
-                    <ul className="dropdown-menu">
-                      <li><a href="#">Action</a></li>
-                      <li><a href="#">Another action</a></li>
-                      <li><a href="#">Something else here</a></li>
-                      <li role="separator" className="divider"></li>
-                      <li><a href="#">Separated link</a></li>
-                      <li role="separator" className="divider"></li>
-                      <li><a href="#">One more separated link</a></li>
-                    </ul>
-                  </li>
-                  <li className="li-right"><a href="#"><img className="user-image" src="https://giasutoeic.com/static/RealEdu/images/user_icon.png"/> {username}</a></li>
+                
+                  <li className="li-right"><a href="#"><img className="user-image" width='20' height='20' src="https://giasutoeic.com/static/RealEdu/images/user_icon.png"/> {username}</a></li>
+                  <li ><button className="btn-header"><img width='20' height="20" src="https://cdn1.iconfinder.com/data/icons/materia-arrows-symbols-vol-3/24/018_128_arrow_exit_logout-512.png"/><Link to="/signup" className='link' onClick={this.logout.bind(this)}>Logout</Link></button></li>
                 </ul>
               </div>
               
             </div>
           </nav>
-              <div className="jumbotron text-center">
-                <div className="container">
-                  <h1>Welcome To My Website</h1>
-                  <p>English - Open Your World</p>
-                  <a href="#" className="btn btn-primary">Read More</a>
-                </div>
-              </div>
+             <Picture />
             </div>
         )
     }

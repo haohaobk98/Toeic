@@ -100,18 +100,17 @@ var _require = __webpack_require__(42),
 
 var store = __webpack_require__(71);
 
-var _require2 = __webpack_require__(86),
+var _require2 = __webpack_require__(98),
     Router = _require2.Router,
     Route = _require2.Route,
     IndexRoute = _require2.IndexRoute,
     hashHistory = _require2.hashHistory;
 
-var Main = __webpack_require__(146);
-var Homepage = __webpack_require__(150);
-var SignIn = __webpack_require__(154);
-var SignUp = __webpack_require__(163);
-var AllPart = __webpack_require__(165);
-var Timer = __webpack_require__(172);
+var Main = __webpack_require__(158);
+var Homepage = __webpack_require__(164);
+var SignIn = __webpack_require__(168);
+var SignUp = __webpack_require__(188);
+var Timer = __webpack_require__(190);
 function requireUser(nextState, replace, next) {
   if (store.getState().username == null) {
     replace('/');
@@ -131,7 +130,11 @@ ReactDOM.render(React.createElement(
       React.createElement(Route, { path: 'signin', component: SignIn }),
       React.createElement(Route, { path: 'signup', component: SignUp }),
       React.createElement(Route, { path: 'De1', component: Timer, onEnter: requireUser }),
-      React.createElement(Route, { path: 'De2', component: Timer, onEnter: requireUser })
+      React.createElement(Route, { path: 'De2', component: Timer, onEnter: requireUser }),
+      React.createElement(Route, { path: 'De3', component: Timer, onEnter: requireUser }),
+      React.createElement(Route, { path: 'De4', component: Timer, onEnter: requireUser }),
+      React.createElement(Route, { path: 'De5', component: Timer, onEnter: requireUser }),
+      React.createElement(Route, { path: 'De6', component: Timer, onEnter: requireUser })
     )
   )
 ), document.getElementById('root'));
@@ -24650,7 +24653,8 @@ var Part1 = function (_React$Component) {
         number: ""
       }],
       audio: "",
-      test: ""
+      test: "",
+      choose: false
     };
     _this.handleRadio = _this.handleRadio.bind(_this);
     return _this;
@@ -24659,18 +24663,16 @@ var Part1 = function (_React$Component) {
   _createClass(Part1, [{
     key: 'handleRadio',
     value: function handleRadio(e) {
+
       var number = e.target.name;
       var index = e.target.id;
       var value = e.target.value;
+      this.setState({ choose: true });
       var _props = this.props,
           array = _props.array,
-          dispatch = _props.dispatch,
-          indexArray = _props.indexArray,
-          testNumber = _props.testNumber;
-
-      console.log(this.state.test);
-      dispatch({ type: 'GET_TEST_NUMBER', number: this.state.test });
+          dispatch = _props.dispatch;
       // sau khi thuc hien dispatch thi chua lam anh huong den testnumber, phai lan thu 2 kich hoat su kien thi moi thuc su tac dong den.
+
       _axios2.default.post('/checkIndexExist', { index: index, array: array, value: value, number: number }).then(function (res) {
         if (res.data.title == "UPDATE") {
           console.log("update");
@@ -24694,6 +24696,9 @@ var Part1 = function (_React$Component) {
     value: function render() {
       var _this2 = this;
 
+      var colorAnswer = this.props.colorAnswer;
+
+      var class1 = colorAnswer == false ? "no" : "yes";
       return _react2.default.createElement(
         'div',
         null,
@@ -24721,7 +24726,13 @@ var Part1 = function (_React$Component) {
         _react2.default.createElement(
           'p',
           { className: 'para' },
-          'Directions: For each question in this part, you will hear four statements about a picture in your test book. When you hear the statements, you must select the one statement that best describes what you see in the picture. Then find the number of the question on your answer sheet and mark your answer. The statements will not be printed in your test book and will be spoken only one time.'
+          ' ',
+          _react2.default.createElement(
+            'span',
+            { className: 'direction-part' },
+            'Directions '
+          ),
+          ': For each question in this part, you will hear four statements about a picture in your test book. When you hear the statements, you must select the one statement that best describes what you see in the picture. Then find the number of the question on your answer sheet and mark your answer. The statements will not be printed in your test book and will be spoken only one time.'
         ),
         _react2.default.createElement(_Example2.default, null),
         this.state.data.map(function (da, i) {
@@ -24745,25 +24756,25 @@ var Part1 = function (_React$Component) {
               { className: 'radio-wrapper' },
               _react2.default.createElement(
                 'div',
-                { className: 'radio-input radio1' },
+                { className: 'radio-input radio1', id: class1 },
                 _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'A', onChange: _this2.handleRadio }),
                 da.radio1
               ),
               _react2.default.createElement(
                 'div',
-                { className: 'radio-input' },
+                { className: 'radio-input', id: class1 },
                 _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'B', onChange: _this2.handleRadio }),
                 da.radio2
               ),
               _react2.default.createElement(
                 'div',
-                { className: 'radio-input' },
+                { className: 'radio-input', id: class1 },
                 _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'C', onChange: _this2.handleRadio }),
                 da.radio3
               ),
               _react2.default.createElement(
                 'div',
-                { className: 'radio-input' },
+                { className: 'radio-input', id: class1 },
                 _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'D', onChange: _this2.handleRadio }),
                 da.radio4
               )
@@ -24777,12 +24788,15 @@ var Part1 = function (_React$Component) {
     value: function componentDidMount() {
       var _this3 = this;
 
-      _axios2.default.get("/getPart1").then(function (res) {
+      var testNumber = this.props.testNumber;
+
+      _axios2.default.post("/getPart1", { testNumber: testNumber }).then(function (res) {
         _this3.state = {
           data: res.data,
           audio: res.data[0].audio,
           test: res.data[0].test
         };
+
         _this3.setState(_this3.state);
       }).catch(function (err) {
         return console.log(err);
@@ -24796,7 +24810,8 @@ var Part1 = function (_React$Component) {
 module.exports = connect(function (state) {
   return { array: state.array,
     indexArray: state.indexArray,
-    testNumber: state.testNumber
+    testNumber: state.testNumber,
+    colorAnswer: state.colorAnswer
   };
 })(Part1);
 
@@ -26581,6 +26596,8 @@ var _axios = __webpack_require__(14);
 
 var _axios2 = _interopRequireDefault(_axios);
 
+var _reactRedux = __webpack_require__(42);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -26634,7 +26651,9 @@ var Example1 = function (_Component) {
         value: function componentDidMount() {
             var _this2 = this;
 
-            _axios2.default.get('/getExample1').then(function (res) {
+            var testNumber = this.props.testNumber;
+
+            _axios2.default.post('/getExample1', { testNumber: testNumber }).then(function (res) {
 
                 _this2.setState({ data: res.data });
             }).catch(function (err) {
@@ -26646,7 +26665,11 @@ var Example1 = function (_Component) {
     return Example1;
 }(_react.Component);
 
-module.exports = Example1;
+module.exports = (0, _reactRedux.connect)(function (state) {
+    return {
+        testNumber: state.testNumber
+    };
+})(Example1);
 
 /***/ }),
 /* 42 */
@@ -29452,6 +29475,54 @@ var _setSignUp = __webpack_require__(85);
 
 var _setSignUp2 = _interopRequireDefault(_setSignUp);
 
+var _seeAnswer = __webpack_require__(86);
+
+var _seeAnswer2 = _interopRequireDefault(_seeAnswer);
+
+var _changeImage = __webpack_require__(87);
+
+var _changeImage2 = _interopRequireDefault(_changeImage);
+
+var _changeMinute = __webpack_require__(88);
+
+var _changeMinute2 = _interopRequireDefault(_changeMinute);
+
+var _changeSecond = __webpack_require__(89);
+
+var _changeSecond2 = _interopRequireDefault(_changeSecond);
+
+var _colorAnswer = __webpack_require__(90);
+
+var _colorAnswer2 = _interopRequireDefault(_colorAnswer);
+
+var _loadde = __webpack_require__(91);
+
+var _loadde2 = _interopRequireDefault(_loadde);
+
+var _loadde3 = __webpack_require__(92);
+
+var _loadde4 = _interopRequireDefault(_loadde3);
+
+var _loadde5 = __webpack_require__(93);
+
+var _loadde6 = _interopRequireDefault(_loadde5);
+
+var _loadde7 = __webpack_require__(94);
+
+var _loadde8 = _interopRequireDefault(_loadde7);
+
+var _loadde9 = __webpack_require__(95);
+
+var _loadde10 = _interopRequireDefault(_loadde9);
+
+var _addpart = __webpack_require__(96);
+
+var _addpart2 = _interopRequireDefault(_addpart);
+
+var _STT = __webpack_require__(97);
+
+var _STT2 = _interopRequireDefault(_STT);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var redux = __webpack_require__(59);
@@ -29469,7 +29540,19 @@ var reducer = redux.combineReducers({
     numberDoTest: _numberDoTest2.default,
     isDone: _isDone2.default,
     setSignIn: _setSignIn2.default,
-    setSignUp: _setSignUp2.default
+    setSignUp: _setSignUp2.default,
+    seeAnswer: _seeAnswer2.default,
+    changeImage: _changeImage2.default,
+    changeMinute: _changeMinute2.default,
+    changeSecond: _changeSecond2.default,
+    colorAnswer: _colorAnswer2.default,
+    loadde1: _loadde2.default,
+    loadde2: _loadde4.default,
+    loadde3: _loadde6.default,
+    loadde4: _loadde8.default,
+    loadde5: _loadde10.default,
+    STT: _STT2.default,
+    addpart: _addpart2.default
 });
 
 module.exports = reducer;
@@ -29589,6 +29672,8 @@ var username = function username() {
     switch (action.type) {
         case 'LOGIN':
             return action.username;
+        case 'LOGOUT':
+            return null;
         default:
             return state;
     }
@@ -29851,64 +29936,335 @@ module.exports = setSignUp;
 
 /***/ }),
 /* 86 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _redux = __webpack_require__(59);
+
+var _redux2 = _interopRequireDefault(_redux);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var seeAnswer = function seeAnswer() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+    var action = arguments[1];
+
+    if (action.type == 'SEE_ANSWER') return !state;
+    return state;
+};
+module.exports = seeAnswer;
+
+/***/ }),
+/* 87 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _redux = __webpack_require__(59);
+
+var _redux2 = _interopRequireDefault(_redux);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var changeImage = function changeImage() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+    var action = arguments[1];
+
+    if (action.type == "CHANGE_IMAGE") {
+        var x = state;
+        return parseInt(x) % 3 + 1;
+    }
+    return state;
+};
+module.exports = changeImage;
+
+/***/ }),
+/* 88 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _redux = __webpack_require__(59);
+
+var _redux2 = _interopRequireDefault(_redux);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var changeMinute = function changeMinute() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var action = arguments[1];
+
+    if (action.type == 'CHANGE_MINUTE') return action.minute;
+    return state;
+};
+
+module.exports = changeMinute;
+
+/***/ }),
+/* 89 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _redux = __webpack_require__(59);
+
+var _redux2 = _interopRequireDefault(_redux);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var changeSecond = function changeSecond() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var action = arguments[1];
+
+    if (action.type == 'CHANGE_SECOND') return action.second;
+    return state;
+};
+
+module.exports = changeSecond;
+
+/***/ }),
+/* 90 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _redux = __webpack_require__(59);
+
+var _redux2 = _interopRequireDefault(_redux);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var colorAnswer = function colorAnswer() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+  var action = arguments[1];
+
+  if (action.type == 'COLOR_ANSWER') return !state;
+  return state;
+};
+
+module.exports = colorAnswer;
+
+/***/ }),
+/* 91 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _redux = __webpack_require__(59);
+
+var _redux2 = _interopRequireDefault(_redux);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var loadde1 = function loadde1() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+    var action = arguments[1];
+
+    if (action.type == 'LOAD_DE_1') return !state;
+    return state;
+};
+module.exports = loadde1;
+
+/***/ }),
+/* 92 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _redux = __webpack_require__(59);
+
+var _redux2 = _interopRequireDefault(_redux);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var loadde2 = function loadde2() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+    var action = arguments[1];
+
+    if (action.type == 'LOAD_DE_2') return !state;
+    return state;
+};
+module.exports = loadde2;
+
+/***/ }),
+/* 93 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _redux = __webpack_require__(59);
+
+var _redux2 = _interopRequireDefault(_redux);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var loadde3 = function loadde3() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+    var action = arguments[1];
+
+    if (action.type == 'LOAD_DE_3') return !state;
+    return state;
+};
+module.exports = loadde3;
+
+/***/ }),
+/* 94 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _redux = __webpack_require__(59);
+
+var _redux2 = _interopRequireDefault(_redux);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var loadde4 = function loadde4() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+    var action = arguments[1];
+
+    if (action.type == 'LOAD_DE_4') return !state;
+    return state;
+};
+module.exports = loadde4;
+
+/***/ }),
+/* 95 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _redux = __webpack_require__(59);
+
+var _redux2 = _interopRequireDefault(_redux);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var loadde5 = function loadde5() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+    var action = arguments[1];
+
+    if (action.type == 'LOAD_DE_5') return !state;
+    return state;
+};
+module.exports = loadde5;
+
+/***/ }),
+/* 96 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _redux = __webpack_require__(59);
+
+var _redux2 = _interopRequireDefault(_redux);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var addpart = function addpart() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+    var action = arguments[1];
+
+    if (action.type == 'ADD_PART') return !state;
+    return state;
+};
+
+module.exports = addpart;
+
+/***/ }),
+/* 97 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var redux = __webpack_require__(59);
+var STT = function STT() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var action = arguments[1];
+
+    if (action.type == 'INCREASE') {
+        var num = parseInt(state);
+        num++;
+        return num;
+    }
+    return state;
+};
+
+module.exports = STT;
+
+/***/ }),
+/* 98 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(87);
+/* harmony import */ var _Router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(99);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Router", function() { return _Router__WEBPACK_IMPORTED_MODULE_0__["default"]; });
 
-/* harmony import */ var _Link__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(111);
+/* harmony import */ var _Link__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(123);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Link", function() { return _Link__WEBPACK_IMPORTED_MODULE_1__["default"]; });
 
-/* harmony import */ var _IndexLink__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(113);
+/* harmony import */ var _IndexLink__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(125);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "IndexLink", function() { return _IndexLink__WEBPACK_IMPORTED_MODULE_2__["default"]; });
 
-/* harmony import */ var _withRouter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(114);
+/* harmony import */ var _withRouter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(126);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "withRouter", function() { return _withRouter__WEBPACK_IMPORTED_MODULE_3__["default"]; });
 
-/* harmony import */ var _IndexRedirect__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(116);
+/* harmony import */ var _IndexRedirect__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(128);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "IndexRedirect", function() { return _IndexRedirect__WEBPACK_IMPORTED_MODULE_4__["default"]; });
 
-/* harmony import */ var _IndexRoute__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(118);
+/* harmony import */ var _IndexRoute__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(130);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "IndexRoute", function() { return _IndexRoute__WEBPACK_IMPORTED_MODULE_5__["default"]; });
 
-/* harmony import */ var _Redirect__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(117);
+/* harmony import */ var _Redirect__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(129);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Redirect", function() { return _Redirect__WEBPACK_IMPORTED_MODULE_6__["default"]; });
 
-/* harmony import */ var _Route__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(119);
+/* harmony import */ var _Route__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(131);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Route", function() { return _Route__WEBPACK_IMPORTED_MODULE_7__["default"]; });
 
-/* harmony import */ var _RouteUtils__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(105);
+/* harmony import */ var _RouteUtils__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(117);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "createRoutes", function() { return _RouteUtils__WEBPACK_IMPORTED_MODULE_8__["createRoutes"]; });
 
-/* harmony import */ var _RouterContext__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(107);
+/* harmony import */ var _RouterContext__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(119);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "RouterContext", function() { return _RouterContext__WEBPACK_IMPORTED_MODULE_9__["default"]; });
 
-/* harmony import */ var _PropTypes__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(112);
+/* harmony import */ var _PropTypes__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(124);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "locationShape", function() { return _PropTypes__WEBPACK_IMPORTED_MODULE_10__["locationShape"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "routerShape", function() { return _PropTypes__WEBPACK_IMPORTED_MODULE_10__["routerShape"]; });
 
-/* harmony import */ var _match__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(120);
+/* harmony import */ var _match__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(132);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "match", function() { return _match__WEBPACK_IMPORTED_MODULE_11__["default"]; });
 
-/* harmony import */ var _useRouterHistory__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(133);
+/* harmony import */ var _useRouterHistory__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(145);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "useRouterHistory", function() { return _useRouterHistory__WEBPACK_IMPORTED_MODULE_12__["default"]; });
 
-/* harmony import */ var _PatternUtils__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(98);
+/* harmony import */ var _PatternUtils__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(110);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "formatPattern", function() { return _PatternUtils__WEBPACK_IMPORTED_MODULE_13__["formatPattern"]; });
 
-/* harmony import */ var _applyRouterMiddleware__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(134);
+/* harmony import */ var _applyRouterMiddleware__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(146);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "applyRouterMiddleware", function() { return _applyRouterMiddleware__WEBPACK_IMPORTED_MODULE_14__["default"]; });
 
-/* harmony import */ var _browserHistory__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(135);
+/* harmony import */ var _browserHistory__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(147);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "browserHistory", function() { return _browserHistory__WEBPACK_IMPORTED_MODULE_15__["default"]; });
 
-/* harmony import */ var _hashHistory__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(143);
+/* harmony import */ var _hashHistory__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(155);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "hashHistory", function() { return _hashHistory__WEBPACK_IMPORTED_MODULE_16__["default"]; });
 
-/* harmony import */ var _createMemoryHistory__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(122);
+/* harmony import */ var _createMemoryHistory__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(134);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "createMemoryHistory", function() { return _createMemoryHistory__WEBPACK_IMPORTED_MODULE_17__["default"]; });
 
 /* components */
@@ -29958,7 +30314,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /***/ }),
-/* 87 */
+/* 99 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -29967,16 +30323,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var invariant__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(invariant__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(88);
+/* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(100);
 /* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(create_react_class__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(45);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _createTransitionManager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(94);
-/* harmony import */ var _InternalPropTypes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(106);
-/* harmony import */ var _RouterContext__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(107);
-/* harmony import */ var _RouteUtils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(105);
-/* harmony import */ var _RouterUtils__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(110);
-/* harmony import */ var _routerWarning__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(95);
+/* harmony import */ var _createTransitionManager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(106);
+/* harmony import */ var _InternalPropTypes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(118);
+/* harmony import */ var _RouterContext__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(119);
+/* harmony import */ var _RouteUtils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(117);
+/* harmony import */ var _RouterUtils__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(122);
+/* harmony import */ var _routerWarning__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(107);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
@@ -30128,7 +30484,7 @@ var propTypes = {
 /* harmony default export */ __webpack_exports__["default"] = (Router);
 
 /***/ }),
-/* 88 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30143,7 +30499,7 @@ var propTypes = {
 
 
 var React = __webpack_require__(1);
-var factory = __webpack_require__(89);
+var factory = __webpack_require__(101);
 
 if (typeof React === 'undefined') {
   throw Error(
@@ -30163,7 +30519,7 @@ module.exports = factory(
 
 
 /***/ }),
-/* 89 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30179,11 +30535,11 @@ module.exports = factory(
 
 var _assign = __webpack_require__(3);
 
-var emptyObject = __webpack_require__(90);
-var _invariant = __webpack_require__(91);
+var emptyObject = __webpack_require__(102);
+var _invariant = __webpack_require__(103);
 
 if (true) {
-  var warning = __webpack_require__(92);
+  var warning = __webpack_require__(104);
 }
 
 var MIXINS_KEY = 'mixins';
@@ -31094,7 +31450,7 @@ module.exports = factory;
 
 
 /***/ }),
-/* 90 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31117,7 +31473,7 @@ if (true) {
 module.exports = emptyObject;
 
 /***/ }),
-/* 91 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31176,7 +31532,7 @@ function invariant(condition, format, a, b, c, d, e, f) {
 module.exports = invariant;
 
 /***/ }),
-/* 92 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31190,7 +31546,7 @@ module.exports = invariant;
 
 
 
-var emptyFunction = __webpack_require__(93);
+var emptyFunction = __webpack_require__(105);
 
 /**
  * Similar to invariant but only logs a warning if the condition is not met.
@@ -31244,7 +31600,7 @@ if (true) {
 module.exports = warning;
 
 /***/ }),
-/* 93 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31286,18 +31642,18 @@ emptyFunction.thatReturnsArgument = function (arg) {
 module.exports = emptyFunction;
 
 /***/ }),
-/* 94 */
+/* 106 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return createTransitionManager; });
-/* harmony import */ var _routerWarning__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(95);
-/* harmony import */ var _computeChangedRoutes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(97);
-/* harmony import */ var _TransitionUtils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(99);
-/* harmony import */ var _isActive__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(101);
-/* harmony import */ var _getComponents__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(102);
-/* harmony import */ var _matchRoutes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(104);
+/* harmony import */ var _routerWarning__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(107);
+/* harmony import */ var _computeChangedRoutes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(109);
+/* harmony import */ var _TransitionUtils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(111);
+/* harmony import */ var _isActive__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(113);
+/* harmony import */ var _getComponents__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(114);
+/* harmony import */ var _matchRoutes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(116);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 
@@ -31558,14 +31914,14 @@ function createTransitionManager(history, routes) {
 }
 
 /***/ }),
-/* 95 */
+/* 107 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return routerWarning; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "_resetWarned", function() { return _resetWarned; });
-/* harmony import */ var warning__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(96);
+/* harmony import */ var warning__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(108);
 /* harmony import */ var warning__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(warning__WEBPACK_IMPORTED_MODULE_0__);
 
 
@@ -31595,7 +31951,7 @@ function _resetWarned() {
 }
 
 /***/ }),
-/* 96 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31662,12 +32018,12 @@ module.exports = warning;
 
 
 /***/ }),
-/* 97 */
+/* 109 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _PatternUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(98);
+/* harmony import */ var _PatternUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(110);
 
 
 function routeParamsChanged(route, prevState, nextState) {
@@ -31740,7 +32096,7 @@ function computeChangedRoutes(prevState, nextState) {
 /* harmony default export */ __webpack_exports__["default"] = (computeChangedRoutes);
 
 /***/ }),
-/* 98 */
+/* 110 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -31985,13 +32341,13 @@ function formatPattern(pattern, params) {
 }
 
 /***/ }),
-/* 99 */
+/* 111 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return getTransitionUtils; });
-/* harmony import */ var _AsyncUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(100);
+/* harmony import */ var _AsyncUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(112);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 
@@ -32150,7 +32506,7 @@ function getTransitionUtils() {
 }
 
 /***/ }),
-/* 100 */
+/* 112 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -32242,13 +32598,13 @@ function mapAsync(array, work, callback) {
 }
 
 /***/ }),
-/* 101 */
+/* 113 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return isActive; });
-/* harmony import */ var _PatternUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(98);
+/* harmony import */ var _PatternUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(110);
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 
@@ -32396,13 +32752,13 @@ function isActive(_ref, indexOnly, currentLocation, routes, params) {
 }
 
 /***/ }),
-/* 102 */
+/* 114 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _AsyncUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(100);
-/* harmony import */ var _PromiseUtils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(103);
+/* harmony import */ var _AsyncUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(112);
+/* harmony import */ var _PromiseUtils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(115);
 
 
 
@@ -32439,7 +32795,7 @@ function getComponents(nextState, callback) {
 /* harmony default export */ __webpack_exports__["default"] = (getComponents);
 
 /***/ }),
-/* 103 */
+/* 115 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -32450,17 +32806,17 @@ function isPromise(obj) {
 }
 
 /***/ }),
-/* 104 */
+/* 116 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return matchRoutes; });
-/* harmony import */ var _AsyncUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(100);
-/* harmony import */ var _PromiseUtils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(103);
-/* harmony import */ var _PatternUtils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(98);
-/* harmony import */ var _routerWarning__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(95);
-/* harmony import */ var _RouteUtils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(105);
+/* harmony import */ var _AsyncUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(112);
+/* harmony import */ var _PromiseUtils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(115);
+/* harmony import */ var _PatternUtils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(110);
+/* harmony import */ var _routerWarning__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(107);
+/* harmony import */ var _RouteUtils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(117);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 
@@ -32703,7 +33059,7 @@ function matchRoutes(routes, location, callback, remainingPathname) {
 }
 
 /***/ }),
-/* 105 */
+/* 117 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -32796,7 +33152,7 @@ function createRoutes(routes) {
 }
 
 /***/ }),
-/* 106 */
+/* 118 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -32830,7 +33186,7 @@ var route = Object(prop_types__WEBPACK_IMPORTED_MODULE_0__["oneOfType"])([prop_t
 var routes = Object(prop_types__WEBPACK_IMPORTED_MODULE_0__["oneOfType"])([route, Object(prop_types__WEBPACK_IMPORTED_MODULE_0__["arrayOf"])(route)]);
 
 /***/ }),
-/* 107 */
+/* 119 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -32839,13 +33195,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var invariant__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(invariant__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(88);
+/* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(100);
 /* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(create_react_class__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(45);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _getRouteParams__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(108);
-/* harmony import */ var _ContextUtils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(109);
-/* harmony import */ var _RouteUtils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(105);
+/* harmony import */ var _getRouteParams__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(120);
+/* harmony import */ var _ContextUtils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(121);
+/* harmony import */ var _RouteUtils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(117);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -32960,12 +33316,12 @@ var RouterContext = create_react_class__WEBPACK_IMPORTED_MODULE_2___default()({
 /* harmony default export */ __webpack_exports__["default"] = (RouterContext);
 
 /***/ }),
-/* 108 */
+/* 120 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _PatternUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(98);
+/* harmony import */ var _PatternUtils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(110);
 
 
 /**
@@ -32989,7 +33345,7 @@ function getRouteParams(route, params) {
 /* harmony default export */ __webpack_exports__["default"] = (getRouteParams);
 
 /***/ }),
-/* 109 */
+/* 121 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -33115,7 +33471,7 @@ function ContextSubscriber(name) {
 }
 
 /***/ }),
-/* 110 */
+/* 122 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -33146,21 +33502,21 @@ function assignRouterState(router, _ref) {
 }
 
 /***/ }),
-/* 111 */
+/* 123 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(88);
+/* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(100);
 /* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(create_react_class__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(45);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var invariant__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(55);
 /* harmony import */ var invariant__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(invariant__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _PropTypes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(112);
-/* harmony import */ var _ContextUtils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(109);
+/* harmony import */ var _PropTypes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(124);
+/* harmony import */ var _ContextUtils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(121);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
@@ -33292,7 +33648,7 @@ var Link = create_react_class__WEBPACK_IMPORTED_MODULE_1___default()({
 /* harmony default export */ __webpack_exports__["default"] = (Link);
 
 /***/ }),
-/* 112 */
+/* 124 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -33322,16 +33678,16 @@ var locationShape = Object(prop_types__WEBPACK_IMPORTED_MODULE_0__["shape"])({
 });
 
 /***/ }),
-/* 113 */
+/* 125 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(88);
+/* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(100);
 /* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(create_react_class__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _Link__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(111);
+/* harmony import */ var _Link__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(123);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 
@@ -33352,7 +33708,7 @@ var IndexLink = create_react_class__WEBPACK_IMPORTED_MODULE_1___default()({
 /* harmony default export */ __webpack_exports__["default"] = (IndexLink);
 
 /***/ }),
-/* 114 */
+/* 126 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -33362,12 +33718,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var invariant__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(invariant__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(88);
+/* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(100);
 /* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(create_react_class__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var hoist_non_react_statics__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(115);
+/* harmony import */ var hoist_non_react_statics__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(127);
 /* harmony import */ var hoist_non_react_statics__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(hoist_non_react_statics__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _ContextUtils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(109);
-/* harmony import */ var _PropTypes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(112);
+/* harmony import */ var _ContextUtils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(121);
+/* harmony import */ var _PropTypes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(124);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 
@@ -33428,7 +33784,7 @@ function withRouter(WrappedComponent, options) {
 }
 
 /***/ }),
-/* 115 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33503,20 +33859,20 @@ module.exports = hoistNonReactStatics;
 
 
 /***/ }),
-/* 116 */
+/* 128 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(88);
+/* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(100);
 /* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(create_react_class__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(45);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _routerWarning__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(95);
+/* harmony import */ var _routerWarning__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(107);
 /* harmony import */ var invariant__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(55);
 /* harmony import */ var invariant__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(invariant__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _Redirect__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(117);
-/* harmony import */ var _InternalPropTypes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(106);
+/* harmony import */ var _Redirect__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(129);
+/* harmony import */ var _InternalPropTypes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(118);
 
 
 
@@ -33559,20 +33915,20 @@ var IndexRedirect = create_react_class__WEBPACK_IMPORTED_MODULE_0___default()({
 /* harmony default export */ __webpack_exports__["default"] = (IndexRedirect);
 
 /***/ }),
-/* 117 */
+/* 129 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(88);
+/* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(100);
 /* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(create_react_class__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(45);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var invariant__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(55);
 /* harmony import */ var invariant__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(invariant__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _RouteUtils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(105);
-/* harmony import */ var _PatternUtils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(98);
-/* harmony import */ var _InternalPropTypes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(106);
+/* harmony import */ var _RouteUtils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(117);
+/* harmony import */ var _PatternUtils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(110);
+/* harmony import */ var _InternalPropTypes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(118);
 
 
 
@@ -33658,20 +34014,20 @@ var Redirect = create_react_class__WEBPACK_IMPORTED_MODULE_0___default()({
 /* harmony default export */ __webpack_exports__["default"] = (Redirect);
 
 /***/ }),
-/* 118 */
+/* 130 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(88);
+/* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(100);
 /* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(create_react_class__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(45);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _routerWarning__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(95);
+/* harmony import */ var _routerWarning__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(107);
 /* harmony import */ var invariant__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(55);
 /* harmony import */ var invariant__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(invariant__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _RouteUtils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(105);
-/* harmony import */ var _InternalPropTypes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(106);
+/* harmony import */ var _RouteUtils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(117);
+/* harmony import */ var _InternalPropTypes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(118);
 
 
 
@@ -33715,19 +34071,19 @@ var IndexRoute = create_react_class__WEBPACK_IMPORTED_MODULE_0___default()({
 /* harmony default export */ __webpack_exports__["default"] = (IndexRoute);
 
 /***/ }),
-/* 119 */
+/* 131 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(88);
+/* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(100);
 /* harmony import */ var create_react_class__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(create_react_class__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(45);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var invariant__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(55);
 /* harmony import */ var invariant__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(invariant__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _RouteUtils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(105);
-/* harmony import */ var _InternalPropTypes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(106);
+/* harmony import */ var _RouteUtils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(117);
+/* harmony import */ var _InternalPropTypes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(118);
 
 
 
@@ -33769,19 +34125,19 @@ var Route = create_react_class__WEBPACK_IMPORTED_MODULE_0___default()({
 /* harmony default export */ __webpack_exports__["default"] = (Route);
 
 /***/ }),
-/* 120 */
+/* 132 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var history_lib_Actions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(121);
+/* harmony import */ var history_lib_Actions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(133);
 /* harmony import */ var history_lib_Actions__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(history_lib_Actions__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var invariant__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(55);
 /* harmony import */ var invariant__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(invariant__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _createMemoryHistory__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(122);
-/* harmony import */ var _createTransitionManager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(94);
-/* harmony import */ var _RouteUtils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(105);
-/* harmony import */ var _RouterUtils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(110);
+/* harmony import */ var _createMemoryHistory__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(134);
+/* harmony import */ var _createTransitionManager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(106);
+/* harmony import */ var _RouteUtils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(117);
+/* harmony import */ var _RouterUtils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(122);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
@@ -33839,7 +34195,7 @@ function match(_ref, callback) {
 /* harmony default export */ __webpack_exports__["default"] = (match);
 
 /***/ }),
-/* 121 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33867,17 +34223,17 @@ var REPLACE = exports.REPLACE = 'REPLACE';
 var POP = exports.POP = 'POP';
 
 /***/ }),
-/* 122 */
+/* 134 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return createMemoryHistory; });
-/* harmony import */ var history_lib_useQueries__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(123);
+/* harmony import */ var history_lib_useQueries__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(135);
 /* harmony import */ var history_lib_useQueries__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(history_lib_useQueries__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var history_lib_useBasename__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(129);
+/* harmony import */ var history_lib_useBasename__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(141);
 /* harmony import */ var history_lib_useBasename__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(history_lib_useBasename__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var history_lib_createMemoryHistory__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(130);
+/* harmony import */ var history_lib_createMemoryHistory__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(142);
 /* harmony import */ var history_lib_createMemoryHistory__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(history_lib_createMemoryHistory__WEBPACK_IMPORTED_MODULE_2__);
 
 
@@ -33896,7 +34252,7 @@ function createMemoryHistory(options) {
 }
 
 /***/ }),
-/* 123 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33906,15 +34262,15 @@ exports.__esModule = true;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _queryString = __webpack_require__(124);
+var _queryString = __webpack_require__(136);
 
-var _runTransitionHook = __webpack_require__(126);
+var _runTransitionHook = __webpack_require__(138);
 
 var _runTransitionHook2 = _interopRequireDefault(_runTransitionHook);
 
-var _LocationUtils = __webpack_require__(127);
+var _LocationUtils = __webpack_require__(139);
 
-var _PathUtils = __webpack_require__(128);
+var _PathUtils = __webpack_require__(140);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34023,12 +34379,12 @@ var useQueries = function useQueries(createHistory) {
 exports.default = useQueries;
 
 /***/ }),
-/* 124 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var strictUriEncode = __webpack_require__(125);
+var strictUriEncode = __webpack_require__(137);
 var objectAssign = __webpack_require__(3);
 
 function encoderForArrayFormat(opts) {
@@ -34235,7 +34591,7 @@ exports.stringify = function (obj, opts) {
 
 
 /***/ }),
-/* 125 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34248,7 +34604,7 @@ module.exports = function (str) {
 
 
 /***/ }),
-/* 126 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34256,7 +34612,7 @@ module.exports = function (str) {
 
 exports.__esModule = true;
 
-var _warning = __webpack_require__(96);
+var _warning = __webpack_require__(108);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -34277,7 +34633,7 @@ var runTransitionHook = function runTransitionHook(hook, location, callback) {
 exports.default = runTransitionHook;
 
 /***/ }),
-/* 127 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34294,13 +34650,13 @@ var _invariant = __webpack_require__(55);
 
 var _invariant2 = _interopRequireDefault(_invariant);
 
-var _warning = __webpack_require__(96);
+var _warning = __webpack_require__(108);
 
 var _warning2 = _interopRequireDefault(_warning);
 
-var _PathUtils = __webpack_require__(128);
+var _PathUtils = __webpack_require__(140);
 
-var _Actions = __webpack_require__(121);
+var _Actions = __webpack_require__(133);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34375,7 +34731,7 @@ var locationsAreEqual = exports.locationsAreEqual = function locationsAreEqual(a
 };
 
 /***/ }),
-/* 128 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34384,7 +34740,7 @@ var locationsAreEqual = exports.locationsAreEqual = function locationsAreEqual(a
 exports.__esModule = true;
 exports.createPath = exports.parsePath = exports.getQueryStringValueFromPath = exports.stripQueryStringValueFromPath = exports.addQueryStringValueToPath = undefined;
 
-var _warning = __webpack_require__(96);
+var _warning = __webpack_require__(108);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -34477,7 +34833,7 @@ var createPath = exports.createPath = function createPath(location) {
 };
 
 /***/ }),
-/* 129 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34487,11 +34843,11 @@ exports.__esModule = true;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _runTransitionHook = __webpack_require__(126);
+var _runTransitionHook = __webpack_require__(138);
 
 var _runTransitionHook2 = _interopRequireDefault(_runTransitionHook);
 
-var _PathUtils = __webpack_require__(128);
+var _PathUtils = __webpack_require__(140);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34592,7 +34948,7 @@ var useBasename = function useBasename(createHistory) {
 exports.default = useBasename;
 
 /***/ }),
-/* 130 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34602,7 +34958,7 @@ exports.__esModule = true;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _warning = __webpack_require__(96);
+var _warning = __webpack_require__(108);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -34610,15 +34966,15 @@ var _invariant = __webpack_require__(55);
 
 var _invariant2 = _interopRequireDefault(_invariant);
 
-var _LocationUtils = __webpack_require__(127);
+var _LocationUtils = __webpack_require__(139);
 
-var _PathUtils = __webpack_require__(128);
+var _PathUtils = __webpack_require__(140);
 
-var _createHistory = __webpack_require__(131);
+var _createHistory = __webpack_require__(143);
 
 var _createHistory2 = _interopRequireDefault(_createHistory);
 
-var _Actions = __webpack_require__(121);
+var _Actions = __webpack_require__(133);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34738,7 +35094,7 @@ var createMemoryHistory = function createMemoryHistory() {
 exports.default = createMemoryHistory;
 
 /***/ }),
-/* 131 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34746,17 +35102,17 @@ exports.default = createMemoryHistory;
 
 exports.__esModule = true;
 
-var _AsyncUtils = __webpack_require__(132);
+var _AsyncUtils = __webpack_require__(144);
 
-var _PathUtils = __webpack_require__(128);
+var _PathUtils = __webpack_require__(140);
 
-var _runTransitionHook = __webpack_require__(126);
+var _runTransitionHook = __webpack_require__(138);
 
 var _runTransitionHook2 = _interopRequireDefault(_runTransitionHook);
 
-var _Actions = __webpack_require__(121);
+var _Actions = __webpack_require__(133);
 
-var _LocationUtils = __webpack_require__(127);
+var _LocationUtils = __webpack_require__(139);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34920,7 +35276,7 @@ var createHistory = function createHistory() {
 exports.default = createHistory;
 
 /***/ }),
-/* 132 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34982,15 +35338,15 @@ var loopAsync = exports.loopAsync = function loopAsync(turns, work, callback) {
 };
 
 /***/ }),
-/* 133 */
+/* 145 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return useRouterHistory; });
-/* harmony import */ var history_lib_useQueries__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(123);
+/* harmony import */ var history_lib_useQueries__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(135);
 /* harmony import */ var history_lib_useQueries__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(history_lib_useQueries__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var history_lib_useBasename__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(129);
+/* harmony import */ var history_lib_useBasename__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(141);
 /* harmony import */ var history_lib_useBasename__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(history_lib_useBasename__WEBPACK_IMPORTED_MODULE_1__);
 
 
@@ -35003,15 +35359,15 @@ function useRouterHistory(createHistory) {
 }
 
 /***/ }),
-/* 134 */
+/* 146 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _RouterContext__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(107);
-/* harmony import */ var _routerWarning__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(95);
+/* harmony import */ var _RouterContext__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(119);
+/* harmony import */ var _routerWarning__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(107);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 
@@ -35055,20 +35411,20 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 });
 
 /***/ }),
-/* 135 */
+/* 147 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var history_lib_createBrowserHistory__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(136);
+/* harmony import */ var history_lib_createBrowserHistory__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(148);
 /* harmony import */ var history_lib_createBrowserHistory__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(history_lib_createBrowserHistory__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _createRouterHistory__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(142);
+/* harmony import */ var _createRouterHistory__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(154);
 
 
 /* harmony default export */ __webpack_exports__["default"] = (Object(_createRouterHistory__WEBPACK_IMPORTED_MODULE_1__["default"])(history_lib_createBrowserHistory__WEBPACK_IMPORTED_MODULE_0___default.a));
 
 /***/ }),
-/* 136 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35082,19 +35438,19 @@ var _invariant = __webpack_require__(55);
 
 var _invariant2 = _interopRequireDefault(_invariant);
 
-var _ExecutionEnvironment = __webpack_require__(137);
+var _ExecutionEnvironment = __webpack_require__(149);
 
-var _BrowserProtocol = __webpack_require__(138);
+var _BrowserProtocol = __webpack_require__(150);
 
 var BrowserProtocol = _interopRequireWildcard(_BrowserProtocol);
 
-var _RefreshProtocol = __webpack_require__(141);
+var _RefreshProtocol = __webpack_require__(153);
 
 var RefreshProtocol = _interopRequireWildcard(_RefreshProtocol);
 
-var _DOMUtils = __webpack_require__(139);
+var _DOMUtils = __webpack_require__(151);
 
-var _createHistory = __webpack_require__(131);
+var _createHistory = __webpack_require__(143);
 
 var _createHistory2 = _interopRequireDefault(_createHistory);
 
@@ -35167,7 +35523,7 @@ var createBrowserHistory = function createBrowserHistory() {
 exports.default = createBrowserHistory;
 
 /***/ }),
-/* 137 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35177,7 +35533,7 @@ exports.__esModule = true;
 var canUseDOM = exports.canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
 
 /***/ }),
-/* 138 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35186,15 +35542,15 @@ var canUseDOM = exports.canUseDOM = !!(typeof window !== 'undefined' && window.d
 exports.__esModule = true;
 exports.go = exports.replaceLocation = exports.pushLocation = exports.startListener = exports.getUserConfirmation = exports.getCurrentLocation = undefined;
 
-var _LocationUtils = __webpack_require__(127);
+var _LocationUtils = __webpack_require__(139);
 
-var _DOMUtils = __webpack_require__(139);
+var _DOMUtils = __webpack_require__(151);
 
-var _DOMStateStorage = __webpack_require__(140);
+var _DOMStateStorage = __webpack_require__(152);
 
-var _PathUtils = __webpack_require__(128);
+var _PathUtils = __webpack_require__(140);
 
-var _ExecutionEnvironment = __webpack_require__(137);
+var _ExecutionEnvironment = __webpack_require__(149);
 
 var PopStateEvent = 'popstate';
 var HashChangeEvent = 'hashchange';
@@ -35282,7 +35638,7 @@ var go = exports.go = function go(n) {
 };
 
 /***/ }),
-/* 139 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35337,7 +35693,7 @@ var isExtraneousPopstateEvent = exports.isExtraneousPopstateEvent = function isE
 };
 
 /***/ }),
-/* 140 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35346,7 +35702,7 @@ var isExtraneousPopstateEvent = exports.isExtraneousPopstateEvent = function isE
 exports.__esModule = true;
 exports.readState = exports.saveState = undefined;
 
-var _warning = __webpack_require__(96);
+var _warning = __webpack_require__(108);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -35428,7 +35784,7 @@ var readState = exports.readState = function readState(key) {
 };
 
 /***/ }),
-/* 141 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35437,7 +35793,7 @@ var readState = exports.readState = function readState(key) {
 exports.__esModule = true;
 exports.replaceLocation = exports.pushLocation = exports.getCurrentLocation = exports.go = exports.getUserConfirmation = undefined;
 
-var _BrowserProtocol = __webpack_require__(138);
+var _BrowserProtocol = __webpack_require__(150);
 
 Object.defineProperty(exports, 'getUserConfirmation', {
   enumerable: true,
@@ -35452,9 +35808,9 @@ Object.defineProperty(exports, 'go', {
   }
 });
 
-var _LocationUtils = __webpack_require__(127);
+var _LocationUtils = __webpack_require__(139);
 
-var _PathUtils = __webpack_require__(128);
+var _PathUtils = __webpack_require__(140);
 
 var getCurrentLocation = exports.getCurrentLocation = function getCurrentLocation() {
   return (0, _LocationUtils.createLocation)(window.location);
@@ -35471,13 +35827,13 @@ var replaceLocation = exports.replaceLocation = function replaceLocation(locatio
 };
 
 /***/ }),
-/* 142 */
+/* 154 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return createRouterHistory; });
-/* harmony import */ var _useRouterHistory__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(133);
+/* harmony import */ var _useRouterHistory__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(145);
 
 
 var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
@@ -35489,20 +35845,20 @@ function createRouterHistory(createHistory) {
 }
 
 /***/ }),
-/* 143 */
+/* 155 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var history_lib_createHashHistory__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(144);
+/* harmony import */ var history_lib_createHashHistory__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(156);
 /* harmony import */ var history_lib_createHashHistory__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(history_lib_createHashHistory__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _createRouterHistory__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(142);
+/* harmony import */ var _createRouterHistory__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(154);
 
 
 /* harmony default export */ __webpack_exports__["default"] = (Object(_createRouterHistory__WEBPACK_IMPORTED_MODULE_1__["default"])(history_lib_createHashHistory__WEBPACK_IMPORTED_MODULE_0___default.a));
 
 /***/ }),
-/* 144 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35512,7 +35868,7 @@ exports.__esModule = true;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _warning = __webpack_require__(96);
+var _warning = __webpack_require__(108);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -35520,15 +35876,15 @@ var _invariant = __webpack_require__(55);
 
 var _invariant2 = _interopRequireDefault(_invariant);
 
-var _ExecutionEnvironment = __webpack_require__(137);
+var _ExecutionEnvironment = __webpack_require__(149);
 
-var _DOMUtils = __webpack_require__(139);
+var _DOMUtils = __webpack_require__(151);
 
-var _HashProtocol = __webpack_require__(145);
+var _HashProtocol = __webpack_require__(157);
 
 var HashProtocol = _interopRequireWildcard(_HashProtocol);
 
-var _createHistory = __webpack_require__(131);
+var _createHistory = __webpack_require__(143);
 
 var _createHistory2 = _interopRequireDefault(_createHistory);
 
@@ -35655,7 +36011,7 @@ var createHashHistory = function createHashHistory() {
 exports.default = createHashHistory;
 
 /***/ }),
-/* 145 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35664,7 +36020,7 @@ exports.default = createHashHistory;
 exports.__esModule = true;
 exports.replaceLocation = exports.pushLocation = exports.startListener = exports.getCurrentLocation = exports.go = exports.getUserConfirmation = undefined;
 
-var _BrowserProtocol = __webpack_require__(138);
+var _BrowserProtocol = __webpack_require__(150);
 
 Object.defineProperty(exports, 'getUserConfirmation', {
   enumerable: true,
@@ -35679,17 +36035,17 @@ Object.defineProperty(exports, 'go', {
   }
 });
 
-var _warning = __webpack_require__(96);
+var _warning = __webpack_require__(108);
 
 var _warning2 = _interopRequireDefault(_warning);
 
-var _LocationUtils = __webpack_require__(127);
+var _LocationUtils = __webpack_require__(139);
 
-var _DOMUtils = __webpack_require__(139);
+var _DOMUtils = __webpack_require__(151);
 
-var _DOMStateStorage = __webpack_require__(140);
+var _DOMStateStorage = __webpack_require__(152);
 
-var _PathUtils = __webpack_require__(128);
+var _PathUtils = __webpack_require__(140);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -35797,7 +36153,7 @@ var replaceLocation = exports.replaceLocation = function replaceLocation(locatio
 };
 
 /***/ }),
-/* 146 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35827,7 +36183,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Header = __webpack_require__(147);
+var Header = __webpack_require__(159);
+var Footer = __webpack_require__(163);
 
 var Main = function (_React$Component) {
     _inherits(Main, _React$Component);
@@ -35845,7 +36202,8 @@ var Main = function (_React$Component) {
                 'div',
                 null,
                 _react2.default.createElement(Header, null),
-                this.props.children
+                this.props.children,
+                _react2.default.createElement(Footer, null)
             );
         }
     }, {
@@ -35853,7 +36211,11 @@ var Main = function (_React$Component) {
         value: function componentDidMount() {
             var dispatch = this.props.dispatch;
 
-
+            dispatch({ type: 'LOAD_DE_1' });
+            dispatch({ type: 'LOAD_DE_2' });
+            dispatch({ type: 'LOAD_DE_3' });
+            dispatch({ type: 'LOAD_DE_4' });
+            dispatch({ type: 'LOAD_DE_5' });
             _axios2.default.get('/loadPage').then(function (res) {
                 if (res.data.title == "DA_DANG_NHAP") {
                     dispatch({ type: 'LOGIN', username: res.data.username });
@@ -35874,7 +36236,7 @@ module.exports = (0, _reactRedux.connect)(function (state) {
 })(Main);
 
 /***/ }),
-/* 147 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35900,8 +36262,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var NotUser = __webpack_require__(148);
-var User = __webpack_require__(149);
+var NotUser = __webpack_require__(160);
+var User = __webpack_require__(162);
 
 var Header = function (_React$Component) {
   _inherits(Header, _React$Component);
@@ -35941,7 +36303,7 @@ module.exports = (0, _reactRedux.connect)(function (state) {
 })(Header);
 
 /***/ }),
-/* 148 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35959,9 +36321,11 @@ var _reactDom2 = _interopRequireDefault(_reactDom);
 
 var _reactRedux = __webpack_require__(42);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _Picture = __webpack_require__(161);
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+var _Picture2 = _interopRequireDefault(_Picture);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -35969,7 +36333,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var _require = __webpack_require__(86),
+var _require = __webpack_require__(98),
     Link = _require.Link,
     IndexLink = _require.IndexLink;
 
@@ -35999,8 +36363,6 @@ var NotUser = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _React$createElement;
-
       return _react2.default.createElement(
         'div',
         null,
@@ -36014,21 +36376,9 @@ var NotUser = function (_React$Component) {
               'div',
               { className: 'navbar-header' },
               _react2.default.createElement(
-                'button',
-                { type: 'button', className: 'navbar-toggle collapsed', 'data-toggle': 'collapse', 'data-target': '#bs-example-navbar-collapse-1', 'aria-expanded': 'false' },
-                _react2.default.createElement(
-                  'span',
-                  { className: 'sr-only' },
-                  'Toggle navigation'
-                ),
-                _react2.default.createElement('span', { className: 'icon-bar' }),
-                _react2.default.createElement('span', { className: 'icon-bar' }),
-                _react2.default.createElement('span', { className: 'icon-bar' })
-              ),
-              _react2.default.createElement(
                 'a',
-                (_React$createElement = { className: 'active' }, _defineProperty(_React$createElement, 'className', 'navbar-brand'), _defineProperty(_React$createElement, 'href', '#'), _React$createElement),
-                'English123.com'
+                { href: '#' },
+                _react2.default.createElement('img', { className: 'navbar-brand', width: '400', height: '150', src: 'https://data.tienganh123.com/images/v2/home/logo.png' })
               )
             ),
             _react2.default.createElement(
@@ -36041,13 +36391,18 @@ var NotUser = function (_React$Component) {
                   'li',
                   null,
                   _react2.default.createElement(
-                    IndexLink,
-                    { to: '/signin', onClick: this.handleSignIn.bind(this) },
-                    'SignIn ',
+                    'button',
+                    { className: 'btn-header' },
+                    _react2.default.createElement('img', { width: '20', height: '20', src: 'https://image.flaticon.com/icons/png/128/1250/1250659.png' }),
                     _react2.default.createElement(
-                      'span',
-                      { className: 'sr-only' },
-                      '(current)'
+                      IndexLink,
+                      { to: '/signin', className: 'link', onClick: this.handleSignIn.bind(this) },
+                      'SignIn ',
+                      _react2.default.createElement(
+                        'span',
+                        { className: 'sr-only' },
+                        '(current)'
+                      )
                     )
                   )
                 ),
@@ -36055,69 +36410,13 @@ var NotUser = function (_React$Component) {
                   'li',
                   null,
                   _react2.default.createElement(
-                    Link,
-                    { to: '/signup', onClick: this.handleSignUp.bind(this) },
-                    'SignUp'
-                  )
-                ),
-                _react2.default.createElement(
-                  'li',
-                  { className: 'dropdown' },
-                  _react2.default.createElement(
-                    Link,
-                    { href: '#', className: 'dropdown-toggle', 'data-toggle': 'dropdown', role: 'button', 'aria-haspopup': 'true', 'aria-expanded': 'false' },
-                    'Dropdown ',
-                    _react2.default.createElement('span', { className: 'caret' })
-                  ),
-                  _react2.default.createElement(
-                    'ul',
-                    { className: 'dropdown-menu' },
+                    'button',
+                    { className: 'btn-header' },
+                    _react2.default.createElement('img', { width: '20', height: '20', src: 'https://cdn3.iconfinder.com/data/icons/user-interface-2-9/34/169-512.png' }),
                     _react2.default.createElement(
-                      'li',
-                      null,
-                      _react2.default.createElement(
-                        'a',
-                        { href: '#' },
-                        'Action'
-                      )
-                    ),
-                    _react2.default.createElement(
-                      'li',
-                      null,
-                      _react2.default.createElement(
-                        'a',
-                        { href: '#' },
-                        'Another action'
-                      )
-                    ),
-                    _react2.default.createElement(
-                      'li',
-                      null,
-                      _react2.default.createElement(
-                        'a',
-                        { href: '#' },
-                        'Something else here'
-                      )
-                    ),
-                    _react2.default.createElement('li', { role: 'separator', className: 'divider' }),
-                    _react2.default.createElement(
-                      'li',
-                      null,
-                      _react2.default.createElement(
-                        'a',
-                        { href: '#' },
-                        'Separated link'
-                      )
-                    ),
-                    _react2.default.createElement('li', { role: 'separator', className: 'divider' }),
-                    _react2.default.createElement(
-                      'li',
-                      null,
-                      _react2.default.createElement(
-                        'a',
-                        { href: '#' },
-                        'One more separated link'
-                      )
+                      Link,
+                      { to: '/signup', className: 'link', onClick: this.handleSignUp.bind(this) },
+                      'SignUp'
                     )
                   )
                 )
@@ -36125,29 +36424,7 @@ var NotUser = function (_React$Component) {
             )
           )
         ),
-        _react2.default.createElement(
-          'div',
-          { className: 'jumbotron text-center' },
-          _react2.default.createElement(
-            'div',
-            { className: 'container' },
-            _react2.default.createElement(
-              'h1',
-              null,
-              'Welcome To My Website'
-            ),
-            _react2.default.createElement(
-              'p',
-              null,
-              'English - Open Your World'
-            ),
-            _react2.default.createElement(
-              'a',
-              { href: '#', className: 'btn btn-primary' },
-              'Read More'
-            )
-          )
-        )
+        _react2.default.createElement(_Picture2.default, null)
       );
     }
   }]);
@@ -36158,7 +36435,7 @@ var NotUser = function (_React$Component) {
 module.exports = (0, _reactRedux.connect)()(NotUser);
 
 /***/ }),
-/* 149 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36178,7 +36455,97 @@ var _reactRedux = __webpack_require__(42);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Picture = function (_React$Component) {
+    _inherits(Picture, _React$Component);
+
+    function Picture(props) {
+        _classCallCheck(this, Picture);
+
+        var _this = _possibleConstructorReturn(this, (Picture.__proto__ || Object.getPrototypeOf(Picture)).call(this, props));
+
+        _this._isMounted = false;
+
+        _this.state = {
+            image: 1
+        };
+        _this.changeState = _this.changeState.bind(_this);
+        return _this;
+    }
+
+    _createClass(Picture, [{
+        key: 'changeState',
+        value: function changeState() {
+
+            this.state = {
+                image: this.state.image % 3 + 1
+            };
+            this.setState(this.state);
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement('img', { className: 'image-title', src: "image/" + this.state.image + ".png" })
+            );
+        }
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            this._isMounted = true;
+            setInterval(this.changeState, 4000);
+        }
+    }, {
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {
+            this._isMounted = false;
+        }
+    }]);
+
+    return Picture;
+}(_react2.default.Component);
+
+module.exports = (0, _reactRedux.connect)(function (state) {
+    return {
+        changeImage: state.changeImage
+    };
+})(Picture);
+
+/***/ }),
+/* 162 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(6);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _reactRedux = __webpack_require__(42);
+
+var _Picture = __webpack_require__(161);
+
+var _Picture2 = _interopRequireDefault(_Picture);
+
+var _axios = __webpack_require__(14);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -36186,7 +36553,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var _require = __webpack_require__(86),
+var _require = __webpack_require__(98),
     Link = _require.Link,
     IndexLink = _require.IndexLink;
 
@@ -36200,10 +36567,22 @@ var User = function (_React$Component) {
   }
 
   _createClass(User, [{
+    key: 'logout',
+    value: function logout(e) {
+      var dispatch = this.props.dispatch;
+
+      e.preventDefault();
+      _axios2.default.get('/logout').then(function (res) {
+        if (res.data.title == 'LOGOUT') {
+          dispatch({ type: 'LOGOUT' });
+        }
+      }).catch(function (err) {
+        return console.log(err);
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
-      var _React$createElement;
-
       var username = this.props.username;
 
       return _react2.default.createElement(
@@ -36232,8 +36611,8 @@ var User = function (_React$Component) {
               ),
               _react2.default.createElement(
                 'a',
-                (_React$createElement = { className: 'active' }, _defineProperty(_React$createElement, 'className', 'navbar-brand'), _defineProperty(_React$createElement, 'href', '#'), _React$createElement),
-                'English123.com'
+                { href: '#' },
+                _react2.default.createElement('img', { className: 'navbar-brand', width: '400', height: '150', src: 'https://data.tienganh123.com/images/v2/home/logo.png' })
               )
             ),
             _react2.default.createElement(
@@ -36244,103 +36623,34 @@ var User = function (_React$Component) {
                 { className: 'nav navbar-nav' },
                 _react2.default.createElement(
                   'li',
-                  { className: 'dropdown' },
-                  _react2.default.createElement(
-                    Link,
-                    { href: '#', className: 'dropdown-toggle', 'data-toggle': 'dropdown', role: 'button', 'aria-haspopup': 'true', 'aria-expanded': 'false' },
-                    'Dropdown ',
-                    _react2.default.createElement('span', { className: 'caret' })
-                  ),
-                  _react2.default.createElement(
-                    'ul',
-                    { className: 'dropdown-menu' },
-                    _react2.default.createElement(
-                      'li',
-                      null,
-                      _react2.default.createElement(
-                        'a',
-                        { href: '#' },
-                        'Action'
-                      )
-                    ),
-                    _react2.default.createElement(
-                      'li',
-                      null,
-                      _react2.default.createElement(
-                        'a',
-                        { href: '#' },
-                        'Another action'
-                      )
-                    ),
-                    _react2.default.createElement(
-                      'li',
-                      null,
-                      _react2.default.createElement(
-                        'a',
-                        { href: '#' },
-                        'Something else here'
-                      )
-                    ),
-                    _react2.default.createElement('li', { role: 'separator', className: 'divider' }),
-                    _react2.default.createElement(
-                      'li',
-                      null,
-                      _react2.default.createElement(
-                        'a',
-                        { href: '#' },
-                        'Separated link'
-                      )
-                    ),
-                    _react2.default.createElement('li', { role: 'separator', className: 'divider' }),
-                    _react2.default.createElement(
-                      'li',
-                      null,
-                      _react2.default.createElement(
-                        'a',
-                        { href: '#' },
-                        'One more separated link'
-                      )
-                    )
-                  )
-                ),
-                _react2.default.createElement(
-                  'li',
                   { className: 'li-right' },
                   _react2.default.createElement(
                     'a',
                     { href: '#' },
-                    _react2.default.createElement('img', { className: 'user-image', src: 'https://giasutoeic.com/static/RealEdu/images/user_icon.png' }),
+                    _react2.default.createElement('img', { className: 'user-image', width: '20', height: '20', src: 'https://giasutoeic.com/static/RealEdu/images/user_icon.png' }),
                     ' ',
                     username
+                  )
+                ),
+                _react2.default.createElement(
+                  'li',
+                  null,
+                  _react2.default.createElement(
+                    'button',
+                    { className: 'btn-header' },
+                    _react2.default.createElement('img', { width: '20', height: '20', src: 'https://cdn1.iconfinder.com/data/icons/materia-arrows-symbols-vol-3/24/018_128_arrow_exit_logout-512.png' }),
+                    _react2.default.createElement(
+                      Link,
+                      { to: '/signup', className: 'link', onClick: this.logout.bind(this) },
+                      'Logout'
+                    )
                   )
                 )
               )
             )
           )
         ),
-        _react2.default.createElement(
-          'div',
-          { className: 'jumbotron text-center' },
-          _react2.default.createElement(
-            'div',
-            { className: 'container' },
-            _react2.default.createElement(
-              'h1',
-              null,
-              'Welcome To My Website'
-            ),
-            _react2.default.createElement(
-              'p',
-              null,
-              'English - Open Your World'
-            ),
-            _react2.default.createElement(
-              'a',
-              { href: '#', className: 'btn btn-primary' },
-              'Read More'
-            )
-          )
-        )
+        _react2.default.createElement(_Picture2.default, null)
       );
     }
   }]);
@@ -36355,7 +36665,7 @@ module.exports = (0, _reactRedux.connect)(function (state) {
 })(User);
 
 /***/ }),
-/* 150 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36371,7 +36681,207 @@ var _reactDom = __webpack_require__(6);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _Container = __webpack_require__(151);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Footer = function (_React$Component) {
+   _inherits(Footer, _React$Component);
+
+   function Footer() {
+      _classCallCheck(this, Footer);
+
+      return _possibleConstructorReturn(this, (Footer.__proto__ || Object.getPrototypeOf(Footer)).apply(this, arguments));
+   }
+
+   _createClass(Footer, [{
+      key: 'render',
+      value: function render() {
+         return _react2.default.createElement(
+            'div',
+            { className: 'footer-page' },
+            _react2.default.createElement(
+               'footer',
+               null,
+               _react2.default.createElement(
+                  'div',
+                  { className: 'container' },
+                  _react2.default.createElement(
+                     'div',
+                     { className: 'row' },
+                     _react2.default.createElement(
+                        'div',
+                        { className: 'col-md-4 col-sm-6 col-xs-12' },
+                        _react2.default.createElement(
+                           'span',
+                           { className: 'logo' },
+                           _react2.default.createElement('img', { className: 'image-footer', width: '350', height: '350', src: 'https://sosanhnhat.com/wp-content/uploads/2018/01/so-sanh-hellochao-vs-tienganh123.jpg' })
+                        )
+                     ),
+                     _react2.default.createElement(
+                        'div',
+                        { className: 'col-md-4 col-sm-6 col-xs-12' },
+                        _react2.default.createElement(
+                           'ul',
+                           { className: 'menu' },
+                           _react2.default.createElement(
+                              'span',
+                              null,
+                              'Menu'
+                           ),
+                           _react2.default.createElement(
+                              'li',
+                              null,
+                              _react2.default.createElement(
+                                 'a',
+                                 { href: '#' },
+                                 'Home'
+                              ),
+                              _react2.default.createElement(
+                                 'span',
+                                 null,
+                                 'Ha Noi, Viet Nam'
+                              )
+                           ),
+                           _react2.default.createElement(
+                              'li',
+                              null,
+                              _react2.default.createElement(
+                                 'a',
+                                 { href: '#' },
+                                 'About'
+                              ),
+                              _react2.default.createElement(
+                                 'span',
+                                 null,
+                                 'HaoNguyenTrong.com'
+                              )
+                           ),
+                           _react2.default.createElement(
+                              'li',
+                              null,
+                              _react2.default.createElement(
+                                 'a',
+                                 { href: '#' },
+                                 'Blog'
+                              ),
+                              _react2.default.createElement(
+                                 'span',
+                                 null,
+                                 'HaoNguyenTrong@blog.com'
+                              )
+                           ),
+                           _react2.default.createElement(
+                              'li',
+                              null,
+                              _react2.default.createElement(
+                                 'a',
+                                 { href: '#' },
+                                 'Gallery '
+                              ),
+                              _react2.default.createElement(
+                                 'span',
+                                 null,
+                                 'So 11, Hai Ba Trung, Ha Noi'
+                              )
+                           )
+                        )
+                     ),
+                     _react2.default.createElement(
+                        'div',
+                        { className: 'col-md-4 col-sm-6 col-xs-12' },
+                        _react2.default.createElement(
+                           'ul',
+                           { className: 'address' },
+                           _react2.default.createElement(
+                              'span',
+                              null,
+                              'Contact'
+                           ),
+                           _react2.default.createElement(
+                              'li',
+                              null,
+                              _react2.default.createElement('i', { className: 'fa fa-phone', 'aria-hidden': 'true' }),
+                              ' ',
+                              _react2.default.createElement(
+                                 'a',
+                                 { href: '#' },
+                                 'Phone'
+                              ),
+                              _react2.default.createElement(
+                                 'span',
+                                 null,
+                                 '0123456789'
+                              )
+                           ),
+                           _react2.default.createElement(
+                              'li',
+                              null,
+                              _react2.default.createElement('i', { className: 'fa fa-map-marker', 'aria-hidden': 'true' }),
+                              ' ',
+                              _react2.default.createElement(
+                                 'a',
+                                 { href: '#' },
+                                 'Adress'
+                              ),
+                              _react2.default.createElement(
+                                 'span',
+                                 null,
+                                 'HA Noi, Viet Nam'
+                              )
+                           ),
+                           _react2.default.createElement(
+                              'li',
+                              null,
+                              _react2.default.createElement('i', { className: 'fa fa-envelope', 'aria-hidden': 'true' }),
+                              ' ',
+                              _react2.default.createElement(
+                                 'a',
+                                 { href: '#' },
+                                 'Email'
+                              ),
+                              _react2.default.createElement(
+                                 'span',
+                                 null,
+                                 'HaoNguyenTrong@gmail.com'
+                              )
+                           )
+                        )
+                     )
+                  )
+               )
+            )
+         );
+      }
+   }]);
+
+   return Footer;
+}(_react2.default.Component);
+
+module.exports = Footer;
+
+/***/ }),
+/* 164 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(6);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _Container = __webpack_require__(165);
 
 var _Container2 = _interopRequireDefault(_Container);
 
@@ -36409,7 +36919,7 @@ var Homepage = function (_React$Component) {
 module.exports = Homepage;
 
 /***/ }),
-/* 151 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36431,15 +36941,15 @@ var _axios2 = _interopRequireDefault(_axios);
 
 var _reactRedux = __webpack_require__(42);
 
-var _UserMain = __webpack_require__(152);
+var _UserMain = __webpack_require__(166);
 
 var _UserMain2 = _interopRequireDefault(_UserMain);
 
-var _NotUserMain = __webpack_require__(153);
+var _NotUserMain = __webpack_require__(167);
 
 var _NotUserMain2 = _interopRequireDefault(_NotUserMain);
 
-var _reactRouter = __webpack_require__(86);
+var _reactRouter = __webpack_require__(98);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -36496,7 +37006,7 @@ module.exports = (0, _reactRedux.connect)(function (state) {
 */
 
 /***/ }),
-/* 152 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36518,9 +37028,11 @@ var _axios2 = _interopRequireDefault(_axios);
 
 var _reactRedux = __webpack_require__(42);
 
-var _reactRouter = __webpack_require__(86);
+var _reactRouter = __webpack_require__(98);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -36528,7 +37040,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Header = __webpack_require__(147);
+var Header = __webpack_require__(159);
 
 var UserMain = function (_React$Component) {
     _inherits(UserMain, _React$Component);
@@ -36539,11 +37051,7 @@ var UserMain = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (UserMain.__proto__ || Object.getPrototypeOf(UserMain)).call(this, props));
 
         _this.state = {
-            readScore: 0,
-            listenScore: 0,
-            isDone: "Bạn chưa làm bài thi này",
-            numberDoTest: 0,
-            total: 0
+            arrayInfo: []
         };
         return _this;
     }
@@ -36551,10 +37059,14 @@ var UserMain = function (_React$Component) {
     _createClass(UserMain, [{
         key: 'handleButton',
         value: function handleButton(e) {
-            e.preventDefault();
+            var temp = e.target.href;
+            alert(temp);
+            var test = temp.substring(temp.length - 3);
             var dispatch = this.props.dispatch;
 
-            _axios2.default.get('/numberDoTest').then(function (res) {
+            dispatch({ type: 'GET_TEST_NUMBER', number: test });
+            e.preventDefault();
+            _axios2.default.post('/numberDoTest', { testNumber: test }).then(function (res) {
                 dispatch({ type: 'GET_NUMBER_DO_TEST', value: res.data.maxValue });
             }).catch(function (err) {
                 return console.log(err);
@@ -36563,146 +37075,203 @@ var UserMain = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
+            var _this2 = this;
+
             return _react2.default.createElement(
                 'div',
                 null,
-                _react2.default.createElement(
-                    'ul',
-                    { className: 'list_lesson_toeic' },
-                    _react2.default.createElement(
-                        'li',
-                        { className: 'even' },
+                this.state.arrayInfo.map(function (e, i) {
+                    return _react2.default.createElement(
+                        'div',
+                        { key: i },
                         _react2.default.createElement(
-                            'div',
-                            { className: 'to_unit_left' },
+                            'ul',
+                            { className: 'list_lesson_toeic' },
                             _react2.default.createElement(
-                                'div',
-                                { className: 'to_unit_img' },
-                                _react2.default.createElement(
-                                    _reactRouter.Link,
-                                    { onClick: this.handleButton.bind(this), to: '/De1', title: 'TOEIC Full Test 1' },
-                                    _react2.default.createElement('img', { src: 'https://noidung.tienganh123.com/file/luyen-thi-toeic//fulltests/full-test-2.jpg', width: '118px', height: '98px', alt: 'TOEIC Full Test 1' })
-                                )
-                            ),
-                            _react2.default.createElement(
-                                'div',
-                                { className: 'to_unit_content' },
+                                'li',
+                                { className: 'even' },
                                 _react2.default.createElement(
                                     'div',
-                                    { className: 'lng_right_top' },
+                                    { className: 'to_unit_left' },
                                     _react2.default.createElement(
-                                        'h3',
-                                        { className: 'lng_right_tit', onClick: this.handleButton.bind(this) },
+                                        'div',
+                                        { className: 'to_unit_img' },
                                         _react2.default.createElement(
                                             _reactRouter.Link,
-                                            { to: '/De1', title: 'TOEIC Full Test 1' },
-                                            'TOEIC Full Test 1'
+                                            { onClick: _this2.handleButton.bind(_this2), id: 'De1', to: '/De' + i, title: 'TOEIC Full Test 1' },
+                                            _react2.default.createElement('img', { src: 'https://noidung.tienganh123.com/file/luyen-thi-toeic//fulltests/full-test-2.jpg', width: '118px', height: '98px', alt: 'TOEIC Full Test ' })
                                         )
                                     ),
                                     _react2.default.createElement(
                                         'div',
-                                        { className: 'lng_right_content' },
-                                        'Ng\u01B0\u1EDDi h\u1ECDc l\xE0m b\xE0i thi m\xF4 ph\u1ECFng b\xE0i thi TOEIC th\u1EF1c t\u1EBF. B\xE0i thi ch\u1EC9 c\xF3 tr\xEAn TiengAnh123.Com!'
+                                        { className: 'to_unit_content' },
+                                        _react2.default.createElement(
+                                            'div',
+                                            { className: 'lng_right_top' },
+                                            _react2.default.createElement(
+                                                'h3',
+                                                { className: 'lng_right_tit', onClick: _this2.handleButton.bind(_this2) },
+                                                _react2.default.createElement(
+                                                    _reactRouter.Link,
+                                                    { to: '/De' + (i + 1), title: 'TOEIC Full Test' },
+                                                    'TOEIC Full Test '
+                                                )
+                                            ),
+                                            _react2.default.createElement(
+                                                'div',
+                                                { className: 'lng_right_content' },
+                                                'Ng\u01B0\u1EDDi h\u1ECDc l\xE0m b\xE0i thi m\xF4 ph\u1ECFng b\xE0i thi TOEIC th\u1EF1c t\u1EBF. B\xE0i thi ch\u1EC9 c\xF3 tr\xEAn TiengAnh123.Com!'
+                                            )
+                                        ),
+                                        _react2.default.createElement(
+                                            'div',
+                                            { className: 'lng_r_info' },
+                                            _react2.default.createElement(
+                                                'div',
+                                                { className: 'lng_r_info_item' },
+                                                _react2.default.createElement(
+                                                    'span',
+                                                    null,
+                                                    _react2.default.createElement('img', { src: 'https://www.tienganh123.com/images/lng_icon_view.png' })
+                                                ),
+                                                _react2.default.createElement(
+                                                    'span',
+                                                    null,
+                                                    e.numberDoTest
+                                                )
+                                            )
+                                        )
                                     )
                                 ),
                                 _react2.default.createElement(
                                     'div',
-                                    { className: 'lng_r_info' },
+                                    { className: 'to_unit_info_box' },
                                     _react2.default.createElement(
                                         'div',
-                                        { className: 'lng_r_info_item' },
+                                        { className: 'to_test_info_top' },
+                                        'T\u1ED5ng \u0111i\u1EC3m',
+                                        _react2.default.createElement('br', null),
                                         _react2.default.createElement(
                                             'span',
-                                            null,
-                                            _react2.default.createElement('img', { src: 'https://www.tienganh123.com/images/lng_icon_view.png' })
-                                        ),
-                                        _react2.default.createElement(
-                                            'span',
-                                            null,
-                                            this.state.numberDoTest
+                                            { className: 'to_test_info_top_score' },
+                                            ' ',
+                                            e.info.score,
+                                            '/990'
                                         )
+                                    ),
+                                    _react2.default.createElement(
+                                        'div',
+                                        { className: 'to_test_info_middle' },
+                                        'Reading',
+                                        _react2.default.createElement('br', null),
+                                        ' ',
+                                        _react2.default.createElement(
+                                            'span',
+                                            { className: 'to_test_info_middle_score' },
+                                            e.info.readScore
+                                        )
+                                    ),
+                                    _react2.default.createElement(
+                                        'div',
+                                        { className: 'to_test_info_middle' },
+                                        'Listening',
+                                        _react2.default.createElement('br', null),
+                                        ' ',
+                                        _react2.default.createElement(
+                                            'span',
+                                            { className: 'to_test_info_middle_score' },
+                                            e.info.listenScore
+                                        )
+                                    ),
+                                    _react2.default.createElement(
+                                        'div',
+                                        { className: 'to_test_info_row' },
+                                        _react2.default.createElement(
+                                            'p',
+                                            { className: 'abc' },
+                                            e.info.isdone
+                                        )
+                                    ),
+                                    _react2.default.createElement('div', { className: 'to_uinfo_ar_left' })
+                                ),
+                                _react2.default.createElement(
+                                    'div',
+                                    { className: 'BXH' },
+                                    _react2.default.createElement(
+                                        'h3',
+                                        { className: 'text-center' },
+                                        'B\u1EA3ng x\u1EBFp h\u1EA1ng- Top 5'
+                                    ),
+                                    _react2.default.createElement(
+                                        'table',
+                                        null,
+                                        _react2.default.createElement(
+                                            'tbody',
+                                            null,
+                                            _react2.default.createElement(
+                                                'tr',
+                                                null,
+                                                _react2.default.createElement(
+                                                    'th',
+                                                    null,
+                                                    'STT'
+                                                ),
+                                                _react2.default.createElement(
+                                                    'th',
+                                                    null,
+                                                    'Username'
+                                                ),
+                                                _react2.default.createElement(
+                                                    'th',
+                                                    null,
+                                                    'Score'
+                                                )
+                                            )
+                                        ),
+                                        e.user.map(function (item, y) {
+                                            return _react2.default.createElement(
+                                                'tbody',
+                                                { key: y },
+                                                _react2.default.createElement(
+                                                    'tr',
+                                                    null,
+                                                    _react2.default.createElement(
+                                                        'td',
+                                                        null,
+                                                        parseInt(y) + 1
+                                                    ),
+                                                    _react2.default.createElement(
+                                                        'td',
+                                                        null,
+                                                        item.username
+                                                    ),
+                                                    _react2.default.createElement(
+                                                        'td',
+                                                        null,
+                                                        item.score
+                                                    )
+                                                )
+                                            );
+                                        })
                                     )
                                 )
                             )
-                        ),
-                        _react2.default.createElement(
-                            'div',
-                            { className: 'to_unit_info_box' },
-                            _react2.default.createElement(
-                                'div',
-                                { className: 'to_test_info_top' },
-                                'T\u1ED5ng \u0111i\u1EC3m',
-                                _react2.default.createElement('br', null),
-                                _react2.default.createElement(
-                                    'span',
-                                    { className: 'to_test_info_top_score' },
-                                    ' ',
-                                    this.state.total,
-                                    '/990'
-                                )
-                            ),
-                            _react2.default.createElement(
-                                'div',
-                                { className: 'to_test_info_middle' },
-                                'Reading',
-                                _react2.default.createElement('br', null),
-                                ' ',
-                                _react2.default.createElement(
-                                    'span',
-                                    { className: 'to_test_info_middle_score' },
-                                    this.state.readScore
-                                )
-                            ),
-                            _react2.default.createElement(
-                                'div',
-                                { className: 'to_test_info_middle' },
-                                'Listening',
-                                _react2.default.createElement('br', null),
-                                ' ',
-                                _react2.default.createElement(
-                                    'span',
-                                    { className: 'to_test_info_middle_score' },
-                                    this.state.listenScore
-                                )
-                            ),
-                            _react2.default.createElement(
-                                'div',
-                                { className: 'to_test_info_row' },
-                                _react2.default.createElement(
-                                    'p',
-                                    { className: 'abc' },
-                                    this.state.isDone
-                                )
-                            ),
-                            _react2.default.createElement('div', { className: 'to_uinfo_ar_left' })
                         )
-                    )
-                )
+                    );
+                })
             );
         }
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
-            var _this2 = this;
+            var _this3 = this;
 
-            _axios2.default.get('/getUserInfo').then(function (res) {
-                if (res.data.result != null) {
-
-                    _this2.state = {
-                        readScore: res.data.result.readScore,
-                        listenScore: res.data.result.listenScore,
-                        isDone: res.data.result.isdone,
-                        numberDoTest: res.data.maxValue,
-                        total: res.data.result.score
-                    };
-                    _this2.setState(_this2.state);
-                } else {
-
-                    _this2.state = {
-                        numberDoTest: res.data.maxValue
-                    };
-                    _this2.setState(_this2.state);
-                }
+            _axios2.default.get("/getMain").then(function (res) {
+                _this3.state = {
+                    arrayInfo: res.data.result
+                };
+                console.log(_this3.state.arrayInfo);
+                _this3.setState(_this3.state);
             }).catch(function (err) {
                 return console.log(err);
             });
@@ -36713,13 +37282,17 @@ var UserMain = function (_React$Component) {
 }(_react2.default.Component);
 
 module.exports = (0, _reactRedux.connect)(function (state) {
-    return {
+    var _ref;
+
+    return _ref = {
         username: state.username,
         readScore: state.readScore,
         listenScore: state.listenScore,
         isDone: state.isDone,
-        numberDoTest: state.numberDoTest
-    };
+        numberDoTest: state.numberDoTest,
+        testNumber: state.testNumber,
+        loadde1: state.loadde1
+    }, _defineProperty(_ref, 'loadde1', state.loadde2), _defineProperty(_ref, 'loadde1', state.loadde3), _defineProperty(_ref, 'loadde1', state.loadde4), _defineProperty(_ref, 'loadde1', state.loadde5), _ref;
 })(UserMain);
 
 /*
@@ -36731,7 +37304,7 @@ module.exports = (0, _reactRedux.connect)(function (state) {
 */
 
 /***/ }),
-/* 153 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36753,9 +37326,11 @@ var _axios2 = _interopRequireDefault(_axios);
 
 var _reactRedux = __webpack_require__(42);
 
-var _reactRouter = __webpack_require__(86);
+var _reactRouter = __webpack_require__(98);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -36772,10 +37347,8 @@ var NotUserMain = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (NotUserMain.__proto__ || Object.getPrototypeOf(NotUserMain)).call(this, props));
 
         _this.state = {
-            readScore: 0,
-            listenScore: 0,
-            isDone: "Bạn chưa làm bài thi này",
-            numberDoTest: 0
+            arrayInfo: [],
+            arrayBxh: []
         };
         return _this;
     }
@@ -36788,139 +37361,216 @@ var NotUserMain = function (_React$Component) {
 
             if (username == null) {
                 alert("you have to sign in or sign up first");
+            } else {
+                var temp = e.target.href;
+                var test = temp.substring(temp.length - 3);
+                var dispatch = this.props.dispatch;
+
+                dispatch({ type: 'GET_TEST_NUMBER', number: test });
+                _axios2.default.post('/numberDoTest', { testNumber: test }).then(function (res) {
+                    dispatch({ type: 'GET_NUMBER_DO_TEST', value: res.data.maxValue });
+                }).catch(function (err) {
+                    return console.log(err);
+                });
             }
         }
     }, {
         key: 'render',
         value: function render() {
-            var total = parseInt(this.state.listenScore) + parseInt(this.state.readScore);
+            var _this2 = this;
+
             return _react2.default.createElement(
                 'div',
                 null,
-                _react2.default.createElement(
-                    'ul',
-                    { className: 'list_lesson_toeic' },
-                    _react2.default.createElement(
-                        'li',
-                        { className: 'even' },
+                this.state.arrayInfo.map(function (e, i) {
+                    return _react2.default.createElement(
+                        'div',
+                        { key: i },
                         _react2.default.createElement(
-                            'div',
-                            { className: 'to_unit_left' },
+                            'ul',
+                            { className: 'list_lesson_toeic' },
                             _react2.default.createElement(
-                                'div',
-                                { className: 'to_unit_img' },
-                                _react2.default.createElement(
-                                    _reactRouter.Link,
-                                    { to: '/De1', title: 'TOEIC Full Test 1' },
-                                    _react2.default.createElement('img', { src: 'https://noidung.tienganh123.com/file/luyen-thi-toeic//fulltests/full-test-2.jpg', width: '118px', height: '98px', alt: 'TOEIC Full Test 1' })
-                                )
-                            ),
-                            _react2.default.createElement(
-                                'div',
-                                { className: 'to_unit_content' },
+                                'li',
+                                { className: 'even' },
                                 _react2.default.createElement(
                                     'div',
-                                    { className: 'lng_right_top' },
+                                    { className: 'to_unit_left' },
                                     _react2.default.createElement(
-                                        'h3',
-                                        { className: 'lng_right_tit', onClick: this.handleButton.bind(this) },
+                                        'div',
+                                        { className: 'to_unit_img' },
                                         _react2.default.createElement(
                                             _reactRouter.Link,
-                                            { to: '/De1', title: 'TOEIC Full Test 1' },
-                                            'TOEIC Full Test 1'
+                                            { onClick: _this2.handleButton.bind(_this2), id: 'De1', to: '/De1', title: 'TOEIC Full Test ' },
+                                            _react2.default.createElement('img', { src: 'https://noidung.tienganh123.com/file/luyen-thi-toeic//fulltests/full-test-2.jpg', width: '118px', height: '98px', alt: 'TOEIC Full Test ' })
                                         )
                                     ),
                                     _react2.default.createElement(
                                         'div',
-                                        { className: 'lng_right_content' },
-                                        'Ng\u01B0\u1EDDi h\u1ECDc l\xE0m b\xE0i thi m\xF4 ph\u1ECFng b\xE0i thi TOEIC th\u1EF1c t\u1EBF. B\xE0i thi ch\u1EC9 c\xF3 tr\xEAn TiengAnh123.Com!'
+                                        { className: 'to_unit_content' },
+                                        _react2.default.createElement(
+                                            'div',
+                                            { className: 'lng_right_top' },
+                                            _react2.default.createElement(
+                                                'h3',
+                                                { className: 'lng_right_tit', onClick: _this2.handleButton.bind(_this2) },
+                                                _react2.default.createElement(
+                                                    _reactRouter.Link,
+                                                    { to: '/De1', title: 'TOEIC Full Test 1' },
+                                                    'TOEIC Full Test '
+                                                )
+                                            ),
+                                            _react2.default.createElement(
+                                                'div',
+                                                { className: 'lng_right_content' },
+                                                'Ng\u01B0\u1EDDi h\u1ECDc l\xE0m b\xE0i thi m\xF4 ph\u1ECFng b\xE0i thi TOEIC th\u1EF1c t\u1EBF. B\xE0i thi ch\u1EC9 c\xF3 tr\xEAn TiengAnh123.Com!'
+                                            )
+                                        ),
+                                        _react2.default.createElement(
+                                            'div',
+                                            { className: 'lng_r_info' },
+                                            _react2.default.createElement(
+                                                'div',
+                                                { className: 'lng_r_info_item' },
+                                                _react2.default.createElement(
+                                                    'span',
+                                                    null,
+                                                    _react2.default.createElement('img', { src: 'https://www.tienganh123.com/images/lng_icon_view.png' })
+                                                ),
+                                                _react2.default.createElement(
+                                                    'span',
+                                                    null,
+                                                    e.numberDoTest
+                                                )
+                                            )
+                                        )
                                     )
                                 ),
                                 _react2.default.createElement(
                                     'div',
-                                    { className: 'lng_r_info' },
+                                    { className: 'to_unit_info_box' },
                                     _react2.default.createElement(
                                         'div',
-                                        { className: 'lng_r_info_item' },
+                                        { className: 'to_test_info_top' },
+                                        'T\u1ED5ng \u0111i\u1EC3m',
+                                        _react2.default.createElement('br', null),
                                         _react2.default.createElement(
                                             'span',
-                                            null,
-                                            _react2.default.createElement('img', { src: 'https://www.tienganh123.com/images/lng_icon_view.png' })
-                                        ),
-                                        _react2.default.createElement(
-                                            'span',
-                                            null,
-                                            this.state.numberDoTest
+                                            { className: 'to_test_info_top_score' },
+                                            ' 0/990'
                                         )
+                                    ),
+                                    _react2.default.createElement(
+                                        'div',
+                                        { className: 'to_test_info_middle' },
+                                        'Reading',
+                                        _react2.default.createElement('br', null),
+                                        ' ',
+                                        _react2.default.createElement(
+                                            'span',
+                                            { className: 'to_test_info_middle_score' },
+                                            '0'
+                                        )
+                                    ),
+                                    _react2.default.createElement(
+                                        'div',
+                                        { className: 'to_test_info_middle' },
+                                        'Listening',
+                                        _react2.default.createElement('br', null),
+                                        ' ',
+                                        _react2.default.createElement(
+                                            'span',
+                                            { className: 'to_test_info_middle_score' },
+                                            '0'
+                                        )
+                                    ),
+                                    _react2.default.createElement(
+                                        'div',
+                                        { className: 'to_test_info_row' },
+                                        _react2.default.createElement(
+                                            'p',
+                                            { className: 'abc' },
+                                            'B\u1EA1n ch\u01B0a l\xE0m b\xE0i thi n\xE0y'
+                                        )
+                                    ),
+                                    _react2.default.createElement('div', { className: 'to_uinfo_ar_left' })
+                                ),
+                                _react2.default.createElement(
+                                    'div',
+                                    { className: 'BXH' },
+                                    _react2.default.createElement(
+                                        'h3',
+                                        { className: 'text-center' },
+                                        'B\u1EA3ng x\u1EBFp h\u1EA1ng- Top 5'
+                                    ),
+                                    _react2.default.createElement(
+                                        'table',
+                                        null,
+                                        _react2.default.createElement(
+                                            'tbody',
+                                            null,
+                                            _react2.default.createElement(
+                                                'tr',
+                                                null,
+                                                _react2.default.createElement(
+                                                    'th',
+                                                    null,
+                                                    'STT'
+                                                ),
+                                                _react2.default.createElement(
+                                                    'th',
+                                                    null,
+                                                    'Username'
+                                                ),
+                                                _react2.default.createElement(
+                                                    'th',
+                                                    null,
+                                                    'Score'
+                                                )
+                                            )
+                                        ),
+                                        e.user.map(function (item, y) {
+                                            return _react2.default.createElement(
+                                                'tbody',
+                                                { key: y },
+                                                _react2.default.createElement(
+                                                    'tr',
+                                                    null,
+                                                    _react2.default.createElement(
+                                                        'td',
+                                                        null,
+                                                        parseInt(y) + 1
+                                                    ),
+                                                    _react2.default.createElement(
+                                                        'td',
+                                                        null,
+                                                        item.username
+                                                    ),
+                                                    _react2.default.createElement(
+                                                        'td',
+                                                        null,
+                                                        item.score
+                                                    )
+                                                )
+                                            );
+                                        })
                                     )
                                 )
                             )
-                        ),
-                        _react2.default.createElement(
-                            'div',
-                            { className: 'to_unit_info_box' },
-                            _react2.default.createElement(
-                                'div',
-                                { className: 'to_test_info_top' },
-                                'T\u1ED5ng \u0111i\u1EC3m',
-                                _react2.default.createElement('br', null),
-                                _react2.default.createElement(
-                                    'span',
-                                    { className: 'to_test_info_top_score' },
-                                    ' ',
-                                    total,
-                                    '/990'
-                                )
-                            ),
-                            _react2.default.createElement(
-                                'div',
-                                { className: 'to_test_info_middle' },
-                                'Reading',
-                                _react2.default.createElement('br', null),
-                                ' ',
-                                _react2.default.createElement(
-                                    'span',
-                                    { className: 'to_test_info_middle_score' },
-                                    this.state.readScore
-                                )
-                            ),
-                            _react2.default.createElement(
-                                'div',
-                                { className: 'to_test_info_middle' },
-                                'Listening',
-                                _react2.default.createElement('br', null),
-                                ' ',
-                                _react2.default.createElement(
-                                    'span',
-                                    { className: 'to_test_info_middle_score' },
-                                    this.state.listenScore
-                                )
-                            ),
-                            _react2.default.createElement(
-                                'div',
-                                { className: 'to_test_info_row' },
-                                _react2.default.createElement(
-                                    'p',
-                                    { className: 'abc' },
-                                    this.state.isDone
-                                )
-                            ),
-                            _react2.default.createElement('div', { className: 'to_uinfo_ar_left' })
                         )
-                    )
-                )
+                    );
+                })
             );
         }
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
-            var _this2 = this;
+            var _this3 = this;
 
-            _axios2.default.get('/getUserInfo').then(function (res) {
-                _this2.state = {
-                    numberDoTest: res.data.maxValue
+            _axios2.default.get("/getMain").then(function (res) {
+                _this3.state = {
+                    arrayInfo: res.data.result
                 };
-                _this2.setState(_this2.state);
+                _this3.setState(_this3.state);
             }).catch(function (err) {
                 return console.log(err);
             });
@@ -36931,25 +37581,21 @@ var NotUserMain = function (_React$Component) {
 }(_react2.default.Component);
 
 module.exports = (0, _reactRedux.connect)(function (state) {
-    return {
+    var _ref;
+
+    return _ref = {
         username: state.username,
         readScore: state.readScore,
         listenScore: state.listenScore,
         isDone: state.isDone,
-        numberDoTest: state.numberDoTest
-    };
+        numberDoTest: state.numberDoTest,
+        testNumber: state.testNumber,
+        loadde1: state.loadde1
+    }, _defineProperty(_ref, 'loadde1', state.loadde2), _defineProperty(_ref, 'loadde1', state.loadde3), _defineProperty(_ref, 'loadde1', state.loadde4), _defineProperty(_ref, 'loadde1', state.loadde5), _ref;
 })(NotUserMain);
 
-/*
-
-<button onClick={this.handleButton.bind(this)}><Link to='/De1'> Test 1 </Link></button>
-<button onClick={this.handleButton.bind(this)}><Link to='/De2'> Test 2 </Link></button>     
-
-
-*/
-
 /***/ }),
-/* 154 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36971,13 +37617,17 @@ var _axios2 = _interopRequireDefault(_axios);
 
 var _reactRedux = __webpack_require__(42);
 
-var _SignInForm = __webpack_require__(155);
+var _SignInForm = __webpack_require__(169);
 
 var _SignInForm2 = _interopRequireDefault(_SignInForm);
 
-var _Container = __webpack_require__(151);
+var _Container = __webpack_require__(165);
 
 var _Container2 = _interopRequireDefault(_Container);
+
+var _AdminAdd = __webpack_require__(177);
+
+var _AdminAdd2 = _interopRequireDefault(_AdminAdd);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37002,6 +37652,7 @@ var SignIn = function (_React$Component) {
             var username = this.props.username;
 
             var html1 = username == null ? _react2.default.createElement(_SignInForm2.default, null) : _react2.default.createElement(_Container2.default, null);
+            var html1 = username == "admin" ? _react2.default.createElement(_AdminAdd2.default, null) : html1;
             var notification = this.props.notification;
 
 
@@ -37024,7 +37675,7 @@ module.exports = (0, _reactRedux.connect)(function (state) {
 })(SignIn);
 
 /***/ }),
-/* 155 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37046,11 +37697,11 @@ var _axios2 = _interopRequireDefault(_axios);
 
 var _reactRedux = __webpack_require__(42);
 
-var _Notification = __webpack_require__(156);
+var _Notification = __webpack_require__(170);
 
 var _Notification2 = _interopRequireDefault(_Notification);
 
-var _reactAwesomeModal = __webpack_require__(157);
+var _reactAwesomeModal = __webpack_require__(171);
 
 var _reactAwesomeModal2 = _interopRequireDefault(_reactAwesomeModal);
 
@@ -37063,45 +37714,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-// class SignInForm extends React.Component{
-//     handleSignin(e){
-//         e.preventDefault();
-//         var {dispatch, notification} = this.props;
-//         axios.post('/login',{username: this.refs.txtusername.value,password:this.refs.txtpassword.value})
-//         .then((res)=>{
-//             if(res.data == "DANG_NHAP_THANH_CONG"){
-//                 dispatch({type:'LOGIN',username:this.refs.txtusername.value});
-//             }else{
-//                 dispatch({type:'SHOW_NOTI',msg:"Username or password is not correct!"});
-//                 console.log("to here");
-//                 console.log(notification);
-//             }
-//         })
-//         .catch((err)=>console.log(err))
-//     }
-//     render(){
-//         return(
-//             <div>
-//                 <form onSubmit={this.handleSignin.bind(this)}>
-//                 <label>Username:</label>
-//                 <input type="text" ref="txtusername" placeholder="Enter your account"/>
-//                 <br></br>
-//                 <label>PassWord:</label>
-//                 <input type="password" ref="txtpassword" placeholder="Enter your password"/>
-//                 <br></br>
-//                 <button type="submit">Sign In</button>
-//                 </form>
-//             </div>
-//         )
-//     }
-// }
-
-// module.exports = connect(function(state){
-//     return{
-//         username: state.username,
-//         notification: state.notification
-//     }
-// })(SignInForm);
 
 var SignInForm = function (_Component) {
     _inherits(SignInForm, _Component);
@@ -37132,8 +37744,6 @@ var SignInForm = function (_Component) {
                     dispatch({ type: 'LOGIN', username: _this2.refs.txtusername.value });
                 } else {
                     dispatch({ type: 'SHOW_NOTI', msg: "Username or password is not correct!" });
-                    console.log("to here");
-                    console.log(notification);
                 }
             }).catch(function (err) {
                 return console.log(err);
@@ -37199,7 +37809,7 @@ var SignInForm = function (_Component) {
                             _react2.default.createElement(
                                 'label',
                                 null,
-                                _react2.default.createElement('input', { type: 'checkbox', checked: 'checked', name: 'remember' }),
+                                _react2.default.createElement('input', { type: 'checkbox', name: 'remember' }),
                                 ' Remember me'
                             ),
                             html2,
@@ -37227,7 +37837,7 @@ module.exports = (0, _reactRedux.connect)(function (state) {
 })(SignInForm);
 
 /***/ }),
-/* 156 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37288,7 +37898,7 @@ var Notification = function (_React$Component) {
 module.exports = (0, _reactRedux.connect)()(Notification);
 
 /***/ }),
-/* 157 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37306,7 +37916,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _style = __webpack_require__(158);
+var _style = __webpack_require__(172);
 
 var _style2 = _interopRequireDefault(_style);
 
@@ -37413,7 +38023,7 @@ var Modal = function (_Component) {
 exports.default = Modal;
 
 /***/ }),
-/* 158 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37423,19 +38033,19 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _fadeInDown = __webpack_require__(159);
+var _fadeInDown = __webpack_require__(173);
 
 var _fadeInDown2 = _interopRequireDefault(_fadeInDown);
 
-var _fadeInUp = __webpack_require__(160);
+var _fadeInUp = __webpack_require__(174);
 
 var _fadeInUp2 = _interopRequireDefault(_fadeInUp);
 
-var _fadeInLeft = __webpack_require__(161);
+var _fadeInLeft = __webpack_require__(175);
 
 var _fadeInLeft2 = _interopRequireDefault(_fadeInLeft);
 
-var _fadeInRight = __webpack_require__(162);
+var _fadeInRight = __webpack_require__(176);
 
 var _fadeInRight2 = _interopRequireDefault(_fadeInRight);
 
@@ -37449,7 +38059,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 159 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37513,7 +38123,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 160 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37577,7 +38187,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 161 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37641,7 +38251,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 162 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37705,7 +38315,1779 @@ exports.default = {
 };
 
 /***/ }),
-/* 163 */
+/* 177 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(6);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _axios = __webpack_require__(14);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _reactRedux = __webpack_require__(42);
+
+var _CreatePart = __webpack_require__(178);
+
+var _CreatePart2 = _interopRequireDefault(_CreatePart);
+
+var _CreatePart3 = __webpack_require__(179);
+
+var _CreatePart4 = _interopRequireDefault(_CreatePart3);
+
+var _CreatePart5 = __webpack_require__(180);
+
+var _CreatePart6 = _interopRequireDefault(_CreatePart5);
+
+var _CreatePart7 = __webpack_require__(181);
+
+var _CreatePart8 = _interopRequireDefault(_CreatePart7);
+
+var _CreatePart9 = __webpack_require__(182);
+
+var _CreatePart10 = _interopRequireDefault(_CreatePart9);
+
+var _CreatePart11 = __webpack_require__(183);
+
+var _CreatePart12 = _interopRequireDefault(_CreatePart11);
+
+var _CreatePart13 = __webpack_require__(184);
+
+var _CreatePart14 = _interopRequireDefault(_CreatePart13);
+
+var _AdminMain = __webpack_require__(185);
+
+var _AdminMain2 = _interopRequireDefault(_AdminMain);
+
+var _CreateExample = __webpack_require__(186);
+
+var _CreateExample2 = _interopRequireDefault(_CreateExample);
+
+var _CreateQuestion = __webpack_require__(187);
+
+var _CreateQuestion2 = _interopRequireDefault(_CreateQuestion);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var AdminAdd = function (_React$Component) {
+    _inherits(AdminAdd, _React$Component);
+
+    function AdminAdd() {
+        _classCallCheck(this, AdminAdd);
+
+        return _possibleConstructorReturn(this, (AdminAdd.__proto__ || Object.getPrototypeOf(AdminAdd)).apply(this, arguments));
+    }
+
+    _createClass(AdminAdd, [{
+        key: 'render',
+        value: function render() {
+            var _props = this.props,
+                addpart = _props.addpart,
+                STT = _props.STT;
+
+            var html = addpart == false ? _react2.default.createElement(_AdminMain2.default, null) : _react2.default.createElement(_CreateExample2.default, null);
+            html = STT > 0 ? _react2.default.createElement(_CreatePart2.default, null) : html;
+            html = STT == 1 ? _react2.default.createElement(_CreateQuestion2.default, null) : html;
+            html = STT > 10 ? _react2.default.createElement(_CreatePart4.default, null) : html;
+            html = STT > 40 ? _react2.default.createElement(_CreatePart6.default, null) : html;
+            html = STT > 70 ? _react2.default.createElement(_CreatePart8.default, null) : html;
+            html = STT > 100 ? _react2.default.createElement(_CreatePart10.default, null) : html;
+            html = STT > 140 ? _react2.default.createElement(_CreatePart12.default, null) : html;
+            html = STT > 170 ? _react2.default.createElement(_CreatePart14.default, null) : html;
+            html = STT == 201 ? _react2.default.createElement(_AdminMain2.default, null) : html;
+            if (html == null) {
+                return _react2.default.createElement(
+                    'div',
+                    null,
+                    'Nothing'
+                );
+            } else {
+                return _react2.default.createElement(
+                    'div',
+                    null,
+                    html
+                );
+            }
+        }
+    }]);
+
+    return AdminAdd;
+}(_react2.default.Component);
+
+module.exports = (0, _reactRedux.connect)(function (state) {
+    return {
+        username: state.username,
+        readScore: state.readScore,
+        listenScore: state.listenScore,
+        isDone: state.isDone,
+        numberDoTest: state.numberDoTest,
+        testNumber: state.testNumber,
+        loadde1: state.loadde1,
+        loadde2: state.loadde2,
+        loadde3: state.loadde3,
+        loadde4: state.loadde4,
+        loadde5: state.loadde5,
+        addpart: state.addpart,
+        STT: state.STT
+
+    };
+})(AdminAdd);
+
+/***/ }),
+/* 178 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(6);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _axios = __webpack_require__(14);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _reactRedux = __webpack_require__(42);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var CreatePart1 = function (_React$Component) {
+    _inherits(CreatePart1, _React$Component);
+
+    function CreatePart1() {
+        _classCallCheck(this, CreatePart1);
+
+        return _possibleConstructorReturn(this, (CreatePart1.__proto__ || Object.getPrototypeOf(CreatePart1)).apply(this, arguments));
+    }
+
+    _createClass(CreatePart1, [{
+        key: 'handlePart1',
+        value: function handlePart1(e) {
+            var _this2 = this;
+
+            var _props = this.props,
+                STT = _props.STT,
+                dispatch = _props.dispatch;
+
+
+            e.preventDefault();
+            // gui request len server thi can them 1 so thong tin nhu sau
+            // part may, STT question, de thi so may
+            _axios2.default.post('/addPart1', {
+                audio: "",
+                image: this.refs.image.value,
+                textQuestion: this.refs.textQuestion.value,
+                radio1: "A)" + this.refs.optionA.value,
+                radio2: "B)" + this.refs.optionB.value,
+                radio3: "C)" + this.refs.optionC.value,
+                radio4: "D)" + this.refs.optionD.value,
+                answer: this.refs.answer.value,
+                part: 1,
+                number: STT,
+                test: 'De6'
+            }).then(function (res) {
+                _this2.refs.image.value = "";
+                _this2.refs.textQuestion.value = "";
+                _this2.refs.optionA.value = "";
+                _this2.refs.optionB.value = "";
+                _this2.refs.optionC.value = "";
+                _this2.refs.optionD.value = "";
+                _this2.refs.answer.value = "";
+                dispatch({ type: 'INCREASE' });
+            }).catch(function (err) {
+                return console.log(err);
+            });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var STT = this.props.STT;
+
+            return _react2.default.createElement(
+                'div',
+                { className: 'add_forum' },
+                _react2.default.createElement(
+                    'form',
+                    { onSubmit: this.handlePart1.bind(this) },
+                    _react2.default.createElement(
+                        'h2',
+                        null,
+                        'Question ',
+                        STT
+                    ),
+                    _react2.default.createElement(
+                        'label',
+                        null,
+                        'Image:'
+                    ),
+                    _react2.default.createElement('input', { type: 'text', ref: 'image' }),
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement(
+                        'label',
+                        null,
+                        'TextQuestion'
+                    ),
+                    _react2.default.createElement('input', { type: 'text', ref: 'textQuestion' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    ' A) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionA' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    ' B) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionB' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    'C) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionC' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    'D) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionD' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement(
+                        'label',
+                        null,
+                        'Answer'
+                    ),
+                    _react2.default.createElement('input', { type: 'text', ref: 'answer' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement(
+                        'button',
+                        { type: 'submit' },
+                        'Add'
+                    )
+                )
+            );
+        }
+    }]);
+
+    return CreatePart1;
+}(_react2.default.Component);
+
+module.exports = (0, _reactRedux.connect)(function (state) {
+    return {
+        STT: state.STT
+    };
+})(CreatePart1);
+
+/***/ }),
+/* 179 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(6);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _axios = __webpack_require__(14);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _reactRedux = __webpack_require__(42);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var CreatePart2 = function (_React$Component) {
+    _inherits(CreatePart2, _React$Component);
+
+    function CreatePart2() {
+        _classCallCheck(this, CreatePart2);
+
+        return _possibleConstructorReturn(this, (CreatePart2.__proto__ || Object.getPrototypeOf(CreatePart2)).apply(this, arguments));
+    }
+
+    _createClass(CreatePart2, [{
+        key: 'handlePart2',
+        value: function handlePart2(e) {
+            var _this2 = this;
+
+            var _props = this.props,
+                STT = _props.STT,
+                dispatch = _props.dispatch;
+
+
+            e.preventDefault();
+            // gui request len server thi can them 1 so thong tin nhu sau
+            // part may, STT question, de thi so may
+            _axios2.default.post('/addPart2', {
+                audio: "",
+                image: "",
+                textQuestion: this.refs.textQuestion.value,
+                radio1: "A)" + this.refs.optionA.value,
+                radio2: "B)" + this.refs.optionB.value,
+                radio3: "C)" + this.refs.optionC.value,
+                answer: this.refs.answer.value,
+                part: 2,
+                number: STT,
+                test: 'De6'
+            }).then(function (res) {
+
+                _this2.refs.textQuestion.value = "";
+                _this2.refs.optionA.value = "";
+                _this2.refs.optionB.value = "";
+                _this2.refs.optionC.value = "";
+                _this2.refs.answer.value = "";
+                dispatch({ type: 'INCREASE' });
+            }).catch(function (err) {
+                return console.log(err);
+            });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var STT = this.props.STT;
+
+            return _react2.default.createElement(
+                'div',
+                { className: 'add_forum' },
+                _react2.default.createElement(
+                    'form',
+                    { onSubmit: this.handlePart2.bind(this) },
+                    _react2.default.createElement(
+                        'h2',
+                        null,
+                        'Question ',
+                        STT
+                    ),
+                    _react2.default.createElement(
+                        'label',
+                        null,
+                        'TextQuestion'
+                    ),
+                    _react2.default.createElement('input', { type: 'text', ref: 'textQuestion' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    ' A) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionA' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    ' B) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionB' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    'C) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionC' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement(
+                        'label',
+                        null,
+                        'Answer'
+                    ),
+                    _react2.default.createElement('input', { type: 'text', ref: 'answer' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement(
+                        'button',
+                        { type: 'submit' },
+                        'Add'
+                    )
+                )
+            );
+        }
+    }]);
+
+    return CreatePart2;
+}(_react2.default.Component);
+
+module.exports = (0, _reactRedux.connect)(function (state) {
+    return {
+        STT: state.STT
+    };
+})(CreatePart2);
+
+/***/ }),
+/* 180 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(6);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _axios = __webpack_require__(14);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _reactRedux = __webpack_require__(42);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var CreatePart3 = function (_React$Component) {
+    _inherits(CreatePart3, _React$Component);
+
+    function CreatePart3() {
+        _classCallCheck(this, CreatePart3);
+
+        return _possibleConstructorReturn(this, (CreatePart3.__proto__ || Object.getPrototypeOf(CreatePart3)).apply(this, arguments));
+    }
+
+    _createClass(CreatePart3, [{
+        key: 'handlePart1',
+        value: function handlePart1(e) {
+            var _this2 = this;
+
+            var _props = this.props,
+                STT = _props.STT,
+                dispatch = _props.dispatch;
+
+
+            e.preventDefault();
+            // gui request len server thi can them 1 so thong tin nhu sau
+            // part may, STT question, de thi so may
+            _axios2.default.post('/addPart1', {
+                audio: "",
+                image: "",
+                textQuestion: this.refs.textQuestion.value,
+                radio1: "A)" + this.refs.optionA.value,
+                radio2: "B)" + this.refs.optionB.value,
+                radio3: "C)" + this.refs.optionC.value,
+                radio4: "D)" + this.refs.optionD.value,
+                answer: this.refs.answer.value,
+                part: 3,
+                number: STT,
+                test: 'De6'
+            }).then(function (res) {
+
+                _this2.refs.textQuestion.value = "";
+                _this2.refs.optionA.value = "";
+                _this2.refs.optionB.value = "";
+                _this2.refs.optionC.value = "";
+                _this2.refs.optionD.value = "";
+                _this2.refs.answer.value = "";
+                dispatch({ type: 'INCREASE' });
+            }).catch(function (err) {
+                return console.log(err);
+            });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var STT = this.props.STT;
+
+            return _react2.default.createElement(
+                'div',
+                { className: 'add_forum' },
+                _react2.default.createElement(
+                    'form',
+                    { onSubmit: this.handlePart1.bind(this) },
+                    _react2.default.createElement(
+                        'h2',
+                        null,
+                        'Question ',
+                        STT
+                    ),
+                    _react2.default.createElement(
+                        'label',
+                        null,
+                        'TextQuestion'
+                    ),
+                    _react2.default.createElement('input', { type: 'text', ref: 'textQuestion' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    ' A) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionA' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    ' B) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionB' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    'C) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionC' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    'D) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionD' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement(
+                        'label',
+                        null,
+                        'Answer'
+                    ),
+                    _react2.default.createElement('input', { type: 'text', ref: 'answer' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement(
+                        'button',
+                        { type: 'submit' },
+                        'Add'
+                    )
+                )
+            );
+        }
+    }]);
+
+    return CreatePart3;
+}(_react2.default.Component);
+
+module.exports = (0, _reactRedux.connect)(function (state) {
+    return {
+        STT: state.STT
+    };
+})(CreatePart3);
+
+/***/ }),
+/* 181 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(6);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _axios = __webpack_require__(14);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _reactRedux = __webpack_require__(42);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var CreatePart4 = function (_React$Component) {
+    _inherits(CreatePart4, _React$Component);
+
+    function CreatePart4() {
+        _classCallCheck(this, CreatePart4);
+
+        return _possibleConstructorReturn(this, (CreatePart4.__proto__ || Object.getPrototypeOf(CreatePart4)).apply(this, arguments));
+    }
+
+    _createClass(CreatePart4, [{
+        key: 'handlePart1',
+        value: function handlePart1(e) {
+            var _this2 = this;
+
+            var _props = this.props,
+                STT = _props.STT,
+                dispatch = _props.dispatch;
+
+
+            e.preventDefault();
+            // gui request len server thi can them 1 so thong tin nhu sau
+            // part may, STT question, de thi so may
+            _axios2.default.post('/addPart1', {
+                audio: "",
+                image: "",
+                textQuestion: this.refs.textQuestion.value,
+                radio1: "A)" + this.refs.optionA.value,
+                radio2: "B)" + this.refs.optionB.value,
+                radio3: "C)" + this.refs.optionC.value,
+                radio4: "D)" + this.refs.optionD.value,
+                answer: this.refs.answer.value,
+                part: 4,
+                number: STT,
+                test: 'De6'
+            }).then(function (res) {
+
+                _this2.refs.textQuestion.value = "";
+                _this2.refs.optionA.value = "";
+                _this2.refs.optionB.value = "";
+                _this2.refs.optionC.value = "";
+                _this2.refs.optionD.value = "";
+                _this2.refs.answer.value = "";
+                dispatch({ type: 'INCREASE' });
+            }).catch(function (err) {
+                return console.log(err);
+            });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var STT = this.props.STT;
+
+            return _react2.default.createElement(
+                'div',
+                { className: 'add_forum' },
+                _react2.default.createElement(
+                    'form',
+                    { onSubmit: this.handlePart1.bind(this) },
+                    _react2.default.createElement(
+                        'h2',
+                        null,
+                        'Question ',
+                        STT
+                    ),
+                    _react2.default.createElement(
+                        'label',
+                        null,
+                        'TextQuestion'
+                    ),
+                    _react2.default.createElement('input', { type: 'text', ref: 'textQuestion' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    ' A) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionA' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    ' B) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionB' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    'C) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionC' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    'D) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionD' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement(
+                        'label',
+                        null,
+                        'Answer'
+                    ),
+                    _react2.default.createElement('input', { type: 'text', ref: 'answer' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement(
+                        'button',
+                        { type: 'submit' },
+                        'Add'
+                    )
+                )
+            );
+        }
+    }]);
+
+    return CreatePart4;
+}(_react2.default.Component);
+
+module.exports = (0, _reactRedux.connect)(function (state) {
+    return {
+        STT: state.STT
+    };
+})(CreatePart4);
+
+/***/ }),
+/* 182 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(6);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _axios = __webpack_require__(14);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _reactRedux = __webpack_require__(42);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var CreatePart5 = function (_React$Component) {
+    _inherits(CreatePart5, _React$Component);
+
+    function CreatePart5(props) {
+        _classCallCheck(this, CreatePart5);
+
+        var _this = _possibleConstructorReturn(this, (CreatePart5.__proto__ || Object.getPrototypeOf(CreatePart5)).call(this, props));
+
+        _this.state = {
+            value: ""
+        };
+        return _this;
+    }
+
+    _createClass(CreatePart5, [{
+        key: 'handleChange',
+        value: function handleChange(e) {
+            e.preventDefault();
+            this.setState({ value: e.target.value });
+        }
+    }, {
+        key: 'handlePart1',
+        value: function handlePart1(e) {
+            var _this2 = this;
+
+            var _props = this.props,
+                STT = _props.STT,
+                dispatch = _props.dispatch;
+
+
+            e.preventDefault();
+            // gui request len server thi can them 1 so thong tin nhu sau
+            // part may, STT question, de thi so may
+            _axios2.default.post('/addPart1', {
+                audio: "",
+                image: "",
+                textQuestion: this.state.value,
+                radio1: "A)" + this.refs.optionA.value,
+                radio2: "B)" + this.refs.optionB.value,
+                radio3: "C)" + this.refs.optionC.value,
+                radio4: "D)" + this.refs.optionD.value,
+                answer: this.refs.answer.value,
+                part: 5,
+                number: STT,
+                test: 'De6'
+            }).then(function (res) {
+
+                _this2.setState({ value: "" });
+                _this2.refs.optionA.value = "";
+                _this2.refs.optionB.value = "";
+                _this2.refs.optionC.value = "";
+                _this2.refs.optionD.value = "";
+                _this2.refs.answer.value = "";
+                dispatch({ type: 'INCREASE' });
+            }).catch(function (err) {
+                return console.log(err);
+            });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var STT = this.props.STT;
+
+            return _react2.default.createElement(
+                'div',
+                { className: 'add_forum' },
+                _react2.default.createElement(
+                    'form',
+                    { onSubmit: this.handlePart1.bind(this) },
+                    _react2.default.createElement(
+                        'h2',
+                        null,
+                        'Question ',
+                        STT
+                    ),
+                    _react2.default.createElement(
+                        'label',
+                        null,
+                        'TextQuestion'
+                    ),
+                    _react2.default.createElement('textarea', { ClassName: 'text-area', value: this.state.value, onChange: this.handleChange.bind(this) }),
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    ' A) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionA' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    ' B) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionB' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    'C) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionC' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    'D) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionD' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement(
+                        'label',
+                        null,
+                        'Answer'
+                    ),
+                    _react2.default.createElement('input', { type: 'text', ref: 'answer' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement(
+                        'button',
+                        { type: 'submit' },
+                        'Add'
+                    )
+                )
+            );
+        }
+    }]);
+
+    return CreatePart5;
+}(_react2.default.Component);
+
+module.exports = (0, _reactRedux.connect)(function (state) {
+    return {
+        STT: state.STT
+    };
+})(CreatePart5);
+
+/***/ }),
+/* 183 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(6);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _axios = __webpack_require__(14);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _reactRedux = __webpack_require__(42);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var CreatePart6 = function (_React$Component) {
+    _inherits(CreatePart6, _React$Component);
+
+    function CreatePart6(props) {
+        _classCallCheck(this, CreatePart6);
+
+        var _this = _possibleConstructorReturn(this, (CreatePart6.__proto__ || Object.getPrototypeOf(CreatePart6)).call(this, props));
+
+        _this.state = {
+            value: ""
+        };
+        return _this;
+    }
+
+    _createClass(CreatePart6, [{
+        key: 'handleChange',
+        value: function handleChange(e) {
+            e.preventDefault();
+            this.setState({ value: e.target.value });
+        }
+    }, {
+        key: 'handlePart1',
+        value: function handlePart1(e) {
+            var _this2 = this;
+
+            var _props = this.props,
+                STT = _props.STT,
+                dispatch = _props.dispatch;
+
+
+            e.preventDefault();
+            // gui request len server thi can them 1 so thong tin nhu sau
+            // part may, STT question, de thi so may
+            _axios2.default.post('/addPart1', {
+                audio: "",
+                image: "",
+                textQuestion: this.state.value,
+                radio1: "A)" + this.refs.optionA.value,
+                radio2: "B)" + this.refs.optionB.value,
+                radio3: "C)" + this.refs.optionC.value,
+                radio4: "D)" + this.refs.optionD.value,
+                answer: this.refs.answer.value,
+                part: 6,
+                number: STT,
+                test: 'De6'
+            }).then(function (res) {
+
+                _this2.setState({ value: "" });
+                _this2.refs.optionA.value = "";
+                _this2.refs.optionB.value = "";
+                _this2.refs.optionC.value = "";
+                _this2.refs.optionD.value = "";
+                _this2.refs.answer.value = "";
+                dispatch({ type: 'INCREASE' });
+            }).catch(function (err) {
+                return console.log(err);
+            });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var STT = this.props.STT;
+
+            return _react2.default.createElement(
+                'div',
+                { className: 'add_forum' },
+                _react2.default.createElement(
+                    'form',
+                    { onSubmit: this.handlePart1.bind(this) },
+                    _react2.default.createElement(
+                        'h2',
+                        null,
+                        'Question ',
+                        STT
+                    ),
+                    _react2.default.createElement(
+                        'label',
+                        null,
+                        'TextQuestion'
+                    ),
+                    _react2.default.createElement('textarea', { ClassName: 'text-area', value: this.state.value, onChange: this.handleChange.bind(this) }),
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    ' A) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionA' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    ' B) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionB' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    'C) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionC' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    'D) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionD' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement(
+                        'label',
+                        null,
+                        'Answer'
+                    ),
+                    _react2.default.createElement('input', { type: 'text', ref: 'answer' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement(
+                        'button',
+                        { type: 'submit' },
+                        'Add'
+                    )
+                )
+            );
+        }
+    }]);
+
+    return CreatePart6;
+}(_react2.default.Component);
+
+module.exports = (0, _reactRedux.connect)(function (state) {
+    return {
+        STT: state.STT
+    };
+})(CreatePart6);
+
+/***/ }),
+/* 184 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(6);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _axios = __webpack_require__(14);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _reactRedux = __webpack_require__(42);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var CreatePart7 = function (_React$Component) {
+    _inherits(CreatePart7, _React$Component);
+
+    function CreatePart7(props) {
+        _classCallCheck(this, CreatePart7);
+
+        var _this = _possibleConstructorReturn(this, (CreatePart7.__proto__ || Object.getPrototypeOf(CreatePart7)).call(this, props));
+
+        _this.state = {
+            value: ""
+        };
+        return _this;
+    }
+
+    _createClass(CreatePart7, [{
+        key: 'handleChange',
+        value: function handleChange(e) {
+            e.preventDefault();
+            this.setState({ value: e.target.value });
+        }
+    }, {
+        key: 'handlePart1',
+        value: function handlePart1(e) {
+            var _this2 = this;
+
+            var _props = this.props,
+                STT = _props.STT,
+                dispatch = _props.dispatch;
+
+
+            e.preventDefault();
+            // gui request len server thi can them 1 so thong tin nhu sau
+            // part may, STT question, de thi so may
+            _axios2.default.post('/addPart1', {
+                audio: "",
+                image: "",
+                textQuestion: this.state.value,
+                radio1: "A)" + this.refs.optionA.value,
+                radio2: "B)" + this.refs.optionB.value,
+                radio3: "C)" + this.refs.optionC.value,
+                radio4: "D)" + this.refs.optionD.value,
+                answer: this.refs.answer.value,
+                part: 7,
+                number: STT,
+                test: 'De6'
+            }).then(function (res) {
+
+                _this2.setState({ value: "" });
+                _this2.refs.optionA.value = "";
+                _this2.refs.optionB.value = "";
+                _this2.refs.optionC.value = "";
+                _this2.refs.optionD.value = "";
+                _this2.refs.answer.value = "";
+                dispatch({ type: 'INCREASE' });
+            }).catch(function (err) {
+                return console.log(err);
+            });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var STT = this.props.STT;
+
+            return _react2.default.createElement(
+                'div',
+                { className: 'add_forum' },
+                _react2.default.createElement(
+                    'form',
+                    { onSubmit: this.handlePart1.bind(this) },
+                    _react2.default.createElement(
+                        'h2',
+                        null,
+                        'Question ',
+                        STT
+                    ),
+                    _react2.default.createElement(
+                        'label',
+                        null,
+                        'TextQuestion'
+                    ),
+                    _react2.default.createElement('textarea', { ClassName: 'text-area', value: this.state.value, onChange: this.handleChange.bind(this) }),
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    ' A) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionA' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    ' B) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionB' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    'C) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionC' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    'D) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionD' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement(
+                        'label',
+                        null,
+                        'Answer'
+                    ),
+                    _react2.default.createElement('input', { type: 'text', ref: 'answer' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement(
+                        'button',
+                        { type: 'submit' },
+                        'Add'
+                    )
+                )
+            );
+        }
+    }]);
+
+    return CreatePart7;
+}(_react2.default.Component);
+
+module.exports = (0, _reactRedux.connect)(function (state) {
+    return {
+        STT: state.STT
+    };
+})(CreatePart7);
+
+/***/ }),
+/* 185 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(6);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _axios = __webpack_require__(14);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _reactRedux = __webpack_require__(42);
+
+var _reactRouter = __webpack_require__(98);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var AdminMain = function (_React$Component) {
+    _inherits(AdminMain, _React$Component);
+
+    function AdminMain(props) {
+        _classCallCheck(this, AdminMain);
+
+        var _this = _possibleConstructorReturn(this, (AdminMain.__proto__ || Object.getPrototypeOf(AdminMain)).call(this, props));
+
+        _this.state = {
+            arrayInfo: []
+        };
+        return _this;
+    }
+
+    _createClass(AdminMain, [{
+        key: 'handleButton',
+        value: function handleButton(e) {
+            var temp = e.target.href;
+            var test = temp.substring(temp.length - 3);
+            alert(test);
+            var dispatch = this.props.dispatch;
+
+            dispatch({ type: 'GET_TEST_NUMBER', number: test });
+            e.preventDefault();
+            _axios2.default.post('/numberDoTest', { testNumber: test }).then(function (res) {
+                dispatch({ type: 'GET_NUMBER_DO_TEST', value: res.data.maxValue });
+            }).catch(function (err) {
+                return console.log(err);
+            });
+        }
+    }, {
+        key: 'handleDelete',
+        value: function handleDelete(e) {
+            e.preventDefault();
+            var temp = e.target.href;
+            var test = temp.substring(temp.length - 3);
+            console.log(test);
+            _axios2.default.post("/deleteTest", { testNumber: test }).then(function (res) {
+                if (res.data.title == "DELETE") alert("Delete successfully");
+            }).catch(function (err) {
+                return console.log(err);
+            });
+        }
+    }, {
+        key: 'addPart',
+        value: function addPart(e) {
+            e.preventDefault();
+            var dispatch = this.props.dispatch;
+
+            dispatch({ type: 'ADD_PART' });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this2 = this;
+
+            return _react2.default.createElement(
+                'div',
+                null,
+                this.state.arrayInfo.map(function (e, i) {
+                    return _react2.default.createElement(
+                        'div',
+                        { key: i },
+                        _react2.default.createElement(
+                            'ul',
+                            { className: 'list_lesson_toeic' },
+                            _react2.default.createElement(
+                                'li',
+                                { className: 'even' },
+                                _react2.default.createElement(
+                                    'div',
+                                    { className: 'to_unit_left' },
+                                    _react2.default.createElement(
+                                        'div',
+                                        { className: 'to_unit_img' },
+                                        _react2.default.createElement(
+                                            _reactRouter.Link,
+                                            { onClick: _this2.handleButton.bind(_this2), id: 'De1', to: '/De' + i, title: 'TOEIC Full Test ' },
+                                            _react2.default.createElement('img', { src: 'https://noidung.tienganh123.com/file/luyen-thi-toeic//fulltests/full-test-2.jpg', width: '118px', height: '98px', alt: 'TOEIC Full Test 1' })
+                                        )
+                                    ),
+                                    _react2.default.createElement(
+                                        'div',
+                                        { className: 'to_unit_content' },
+                                        _react2.default.createElement(
+                                            'div',
+                                            { className: 'lng_right_top' },
+                                            _react2.default.createElement(
+                                                'h3',
+                                                { className: 'lng_right_tit', onClick: _this2.handleButton.bind(_this2) },
+                                                _react2.default.createElement(
+                                                    _reactRouter.Link,
+                                                    { to: '/De' + (i + 1), title: 'TOEIC Full Test ' },
+                                                    'TOEIC Full Test '
+                                                )
+                                            ),
+                                            _react2.default.createElement(
+                                                'div',
+                                                { className: 'lng_right_content' },
+                                                'Ng\u01B0\u1EDDi h\u1ECDc l\xE0m b\xE0i thi m\xF4 ph\u1ECFng b\xE0i thi TOEIC th\u1EF1c t\u1EBF. B\xE0i thi ch\u1EC9 c\xF3 tr\xEAn TiengAnh123.Com!'
+                                            )
+                                        ),
+                                        _react2.default.createElement(
+                                            'div',
+                                            { className: 'lng_r_info' },
+                                            _react2.default.createElement(
+                                                'div',
+                                                { className: 'lng_r_info_item' },
+                                                _react2.default.createElement(
+                                                    'span',
+                                                    null,
+                                                    _react2.default.createElement('img', { src: 'https://www.tienganh123.com/images/lng_icon_view.png' })
+                                                ),
+                                                _react2.default.createElement(
+                                                    'span',
+                                                    null,
+                                                    e.numberDoTest
+                                                )
+                                            )
+                                        )
+                                    )
+                                ),
+                                _react2.default.createElement(
+                                    'div',
+                                    { className: 'BXH' },
+                                    _react2.default.createElement(
+                                        'h3',
+                                        { className: 'text-center' },
+                                        'B\u1EA3ng x\u1EBFp h\u1EA1ng- Top 5'
+                                    ),
+                                    _react2.default.createElement(
+                                        'table',
+                                        null,
+                                        _react2.default.createElement(
+                                            'tbody',
+                                            null,
+                                            _react2.default.createElement(
+                                                'tr',
+                                                null,
+                                                _react2.default.createElement(
+                                                    'th',
+                                                    null,
+                                                    'STT'
+                                                ),
+                                                _react2.default.createElement(
+                                                    'th',
+                                                    null,
+                                                    'Username'
+                                                ),
+                                                _react2.default.createElement(
+                                                    'th',
+                                                    null,
+                                                    'Score'
+                                                )
+                                            )
+                                        ),
+                                        e.user.map(function (item, y) {
+                                            return _react2.default.createElement(
+                                                'tbody',
+                                                { key: y },
+                                                _react2.default.createElement(
+                                                    'tr',
+                                                    null,
+                                                    _react2.default.createElement(
+                                                        'td',
+                                                        null,
+                                                        parseInt(y) + 1
+                                                    ),
+                                                    _react2.default.createElement(
+                                                        'td',
+                                                        null,
+                                                        item.username
+                                                    ),
+                                                    _react2.default.createElement(
+                                                        'td',
+                                                        null,
+                                                        item.score
+                                                    )
+                                                )
+                                            );
+                                        })
+                                    )
+                                ),
+                                _react2.default.createElement(
+                                    'div',
+                                    { className: 'deletebutton' },
+                                    _react2.default.createElement(
+                                        'button',
+                                        null,
+                                        ' ',
+                                        _react2.default.createElement(
+                                            _reactRouter.Link,
+                                            { className: 'delete', onClick: _this2.handleDelete.bind(_this2), id: 'De1', to: '/De' + (i + 1) },
+                                            'Delete'
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    );
+                }),
+                _react2.default.createElement(
+                    'button',
+                    { onClick: this.addPart.bind(this) },
+                    'ADD'
+                )
+            );
+        }
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            var _this3 = this;
+
+            _axios2.default.get("/getMain").then(function (res) {
+                _this3.state = {
+                    arrayInfo: res.data.result
+                };
+                _this3.setState(_this3.state);
+            }).catch(function (err) {
+                return console.log(err);
+            });
+        }
+    }]);
+
+    return AdminMain;
+}(_react2.default.Component);
+
+module.exports = (0, _reactRedux.connect)(function (state) {
+    return {
+        username: state.username,
+        readScore: state.readScore,
+        listenScore: state.listenScore,
+        isDone: state.isDone,
+        numberDoTest: state.numberDoTest,
+        testNumber: state.testNumber,
+        loadde1: state.loadde1,
+        loadde2: state.loadde2,
+        loadde3: state.loadde3,
+        loadde4: state.loadde4,
+        loadde5: state.loadde5,
+        addpart: state.addpart,
+        STT: state.STT
+
+    };
+})(AdminMain);
+
+/***/ }),
+/* 186 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(6);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _axios = __webpack_require__(14);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _reactRedux = __webpack_require__(42);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var CreateExample = function (_React$Component) {
+    _inherits(CreateExample, _React$Component);
+
+    function CreateExample() {
+        _classCallCheck(this, CreateExample);
+
+        return _possibleConstructorReturn(this, (CreateExample.__proto__ || Object.getPrototypeOf(CreateExample)).apply(this, arguments));
+    }
+
+    _createClass(CreateExample, [{
+        key: 'handleExample',
+        value: function handleExample(e) {
+            var _this2 = this;
+
+            var _props = this.props,
+                STT = _props.STT,
+                dispatch = _props.dispatch;
+
+
+            e.preventDefault();
+            // gui request len server thi can them 1 so thong tin nhu sau
+            // part may, STT question, de thi so may
+            _axios2.default.post('/addExample', {
+                image: this.refs.image.value,
+                textQuestion: "",
+                radio1: "A",
+                radio2: "B",
+                radio3: "C",
+                radio4: "D",
+                answer: "B",
+                part: "Example1",
+                number: "Example1",
+                test: 'De6'
+            }).then(function (res) {
+                _this2.refs.image.value = "";
+                dispatch({ type: 'INCREASE' });
+            }).catch(function (err) {
+                return console.log(err);
+            });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var STT = this.props.STT;
+
+            return _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement(
+                    'form',
+                    { onSubmit: this.handleExample.bind(this) },
+                    _react2.default.createElement(
+                        'h2',
+                        null,
+                        'Example'
+                    ),
+                    _react2.default.createElement(
+                        'label',
+                        null,
+                        'Image:'
+                    ),
+                    _react2.default.createElement('input', { type: 'text', ref: 'image' }),
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement(
+                        'button',
+                        { type: 'submit' },
+                        'Add'
+                    )
+                )
+            );
+        }
+    }]);
+
+    return CreateExample;
+}(_react2.default.Component);
+
+module.exports = (0, _reactRedux.connect)(function (state) {
+    return {
+        STT: state.STT
+    };
+})(CreateExample);
+
+/***/ }),
+/* 187 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(6);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _axios = __webpack_require__(14);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _reactRedux = __webpack_require__(42);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var CreateQuestion1 = function (_React$Component) {
+    _inherits(CreateQuestion1, _React$Component);
+
+    function CreateQuestion1() {
+        _classCallCheck(this, CreateQuestion1);
+
+        return _possibleConstructorReturn(this, (CreateQuestion1.__proto__ || Object.getPrototypeOf(CreateQuestion1)).apply(this, arguments));
+    }
+
+    _createClass(CreateQuestion1, [{
+        key: 'handlePart1',
+        value: function handlePart1(e) {
+            var _this2 = this;
+
+            var _props = this.props,
+                STT = _props.STT,
+                dispatch = _props.dispatch;
+
+
+            e.preventDefault();
+            // gui request len server thi can them 1 so thong tin nhu sau
+            // part may, STT question, de thi so may
+            _axios2.default.post('/addPart1', {
+                audio: this.refs.audio.value,
+                image: this.refs.image.value,
+                textQuestion: this.refs.textQuestion.value,
+                radio1: "A)" + this.refs.optionA.value,
+                radio2: "B)" + this.refs.optionB.value,
+                radio3: "C)" + this.refs.optionC.value,
+                radio4: "D)" + this.refs.optionD.value,
+                answer: this.refs.answer.value,
+                part: 1,
+                number: STT,
+                test: 'De6'
+            }).then(function (res) {
+                _this2.refs.audio.value = "";
+                _this2.refs.image.value = "";
+                _this2.refs.textQuestion.value = "";
+                _this2.refs.optionA.value = "";
+                _this2.refs.optionB.value = "";
+                _this2.refs.optionC.value = "";
+                _this2.refs.optionD.value = "";
+                _this2.refs.answer.value = "";
+                dispatch({ type: 'INCREASE' });
+            }).catch(function (err) {
+                return console.log(err);
+            });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var STT = this.props.STT;
+
+            return _react2.default.createElement(
+                'div',
+                { className: 'add_forum' },
+                _react2.default.createElement(
+                    'form',
+                    { onSubmit: this.handlePart1.bind(this) },
+                    _react2.default.createElement(
+                        'h2',
+                        null,
+                        'Question ',
+                        STT
+                    ),
+                    _react2.default.createElement(
+                        'label',
+                        null,
+                        'Audio:'
+                    ),
+                    _react2.default.createElement('input', { type: 'text', ref: 'audio' }),
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement(
+                        'label',
+                        null,
+                        'Image:'
+                    ),
+                    _react2.default.createElement('input', { type: 'text', ref: 'image' }),
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement(
+                        'label',
+                        null,
+                        'TextQuestion'
+                    ),
+                    _react2.default.createElement('input', { type: 'text', ref: 'textQuestion' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    ' A) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionA' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    ' B) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionB' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    'C) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionC' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement('input', { type: 'radio' }),
+                    'D) ',
+                    _react2.default.createElement('input', { type: 'text', ref: 'optionD' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement(
+                        'label',
+                        null,
+                        'Answer'
+                    ),
+                    _react2.default.createElement('input', { type: 'text', ref: 'answer' }),
+                    ' ',
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement(
+                        'button',
+                        { type: 'submit' },
+                        'Add'
+                    )
+                )
+            );
+        }
+    }]);
+
+    return CreateQuestion1;
+}(_react2.default.Component);
+
+module.exports = (0, _reactRedux.connect)(function (state) {
+    return {
+        STT: state.STT
+    };
+})(CreateQuestion1);
+
+/***/ }),
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37729,17 +40111,17 @@ var _Part = __webpack_require__(13);
 
 var _Part2 = _interopRequireDefault(_Part);
 
-var _SignUpForm = __webpack_require__(164);
+var _SignUpForm = __webpack_require__(189);
 
 var _SignUpForm2 = _interopRequireDefault(_SignUpForm);
 
 var _reactRedux = __webpack_require__(42);
 
-var _Container = __webpack_require__(151);
+var _Container = __webpack_require__(165);
 
 var _Container2 = _interopRequireDefault(_Container);
 
-var _SignIn = __webpack_require__(154);
+var _SignIn = __webpack_require__(168);
 
 var _SignIn2 = _interopRequireDefault(_SignIn);
 
@@ -37788,7 +40170,7 @@ module.exports = (0, _reactRedux.connect)(function (state) {
 // them bang xep hang nua
 
 /***/ }),
-/* 164 */
+/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37808,13 +40190,13 @@ var _axios = __webpack_require__(14);
 
 var _axios2 = _interopRequireDefault(_axios);
 
-var _SignIn = __webpack_require__(154);
+var _SignIn = __webpack_require__(168);
 
 var _SignIn2 = _interopRequireDefault(_SignIn);
 
 var _reactRedux = __webpack_require__(42);
 
-var _reactAwesomeModal = __webpack_require__(157);
+var _reactAwesomeModal = __webpack_require__(171);
 
 var _reactAwesomeModal2 = _interopRequireDefault(_reactAwesomeModal);
 
@@ -37929,7 +40311,278 @@ module.exports = (0, _reactRedux.connect)(function (state) {
 })(SignUpForm);
 
 /***/ }),
-/* 165 */
+/* 190 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(6);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _Time = __webpack_require__(191);
+
+var _Time2 = _interopRequireDefault(_Time);
+
+var _AllPart = __webpack_require__(192);
+
+var _AllPart2 = _interopRequireDefault(_AllPart);
+
+var _Container = __webpack_require__(165);
+
+var _Container2 = _interopRequireDefault(_Container);
+
+var _Part = __webpack_require__(13);
+
+var _Part2 = _interopRequireDefault(_Part);
+
+var _reactRedux = __webpack_require__(42);
+
+var _axios = __webpack_require__(14);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Timer = function (_React$Component) {
+  _inherits(Timer, _React$Component);
+
+  function Timer(props) {
+    _classCallCheck(this, Timer);
+
+    var _this = _possibleConstructorReturn(this, (Timer.__proto__ || Object.getPrototypeOf(Timer)).call(this, props));
+
+    _this.state = {
+      second: '00',
+      minute: '10',
+      started: false
+    };
+    _this.secondsRemaining;
+    _this.intervalHandle;
+    _this.startCountDown = _this.startCountDown.bind(_this);
+    _this.tick = _this.tick.bind(_this);
+
+    return _this;
+  }
+
+  _createClass(Timer, [{
+    key: 'tick',
+    value: function tick() {
+      var dispatch = this.props.dispatch;
+      var _props = this.props,
+          submited = _props.submited,
+          indexArray = _props.indexArray,
+          array = _props.array,
+          testNumber = _props.testNumber,
+          dispatch = _props.dispatch,
+          numberDoTest = _props.numberDoTest;
+
+      if (submited) clearInterval(this.intervalHandle);
+      var min = Math.floor(this.secondsRemaining / 60);
+      var sec = this.secondsRemaining - min * 60;
+      dispatch({ type: 'CHANGE_MINUTE', minute: 119 - parseInt(min) });
+      dispatch({ type: 'CHANGE_SECOND', second: 60 - parseInt(sec) });
+      this.setState({
+        minute: min,
+        second: sec
+      });
+      if (sec < 10) {
+        this.setState({
+          second: "0" + this.state.second
+        });
+      }
+      if (min < 10) {
+        this.setState({
+          minute: "0" + min
+        });
+      }
+      if (min === 0 & sec === 30) {
+        clearInterval(this.intervalHandle);
+        alert("het time!");
+        _axios2.default.post('./submit', { array: array, indexArray: indexArray, testNumber: testNumber, numberDoTest: numberDoTest }).then(function (res) {
+          dispatch({ type: 'SUBMITED' });
+          dispatch({ type: 'GET_LISTEN_SCORE', score: res.data.listeningScore });
+          dispatch({ type: 'GET_READ_SCORE', score: res.data.readingScore });
+        }).catch(function (err) {
+          return console.log(err);
+        });
+      }
+      this.secondsRemaining--;
+    }
+  }, {
+    key: 'startCountDown',
+    value: function startCountDown() {
+      this.intervalHandle = setInterval(this.tick, 1000);
+      var time = this.state.minute;
+      this.secondsRemaining = time * 60;
+      this.setState({ started: true });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var submited = this.props.submited;
+
+      var html = submited == false ? _react2.default.createElement(_Time2.default, { minute: this.state.minute, second: this.state.second }) : null;
+      if (this.state.started) {
+        return _react2.default.createElement(
+          'div',
+          null,
+          _react2.default.createElement(
+            'div',
+            { className: 'text-center' },
+            html
+          ),
+          _react2.default.createElement(_AllPart2.default, null)
+        );
+      } else {
+        return _react2.default.createElement(
+          'div',
+          null,
+          _react2.default.createElement(
+            'div',
+            { className: 'text-center' },
+            _react2.default.createElement(_Time2.default, { minute: this.state.minute, second: this.state.second })
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'comment_bai_hoc clear' },
+            _react2.default.createElement(
+              'div',
+              { className: 'ghichu0 clear bo_goc' },
+              _react2.default.createElement(
+                'h1',
+                { className: 'title_lesson' },
+                'TOEIC Full Test 1'
+              )
+            )
+          ),
+          _react2.default.createElement('br', null),
+          _react2.default.createElement(
+            'div',
+            { className: 'details' },
+            _react2.default.createElement('span', { id: 'fulltest' }),
+            _react2.default.createElement(
+              'div',
+              { className: 'toeic_box_start' },
+              _react2.default.createElement(
+                'h2',
+                { className: 'gthieu' },
+                'Ng\u01B0\u1EDDi h\u1ECDc l\xE0m b\xE0i thi m\xF4 ph\u1ECFng b\xE0i thi TOEIC th\u1EF1c t\u1EBF. B\xE0i thi ch\u1EC9 c\xF3 tr\xEAn TiengAnh123.Com!'
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'toeic_title' },
+                'Full Test 1'
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'toeic_content_start' },
+                'Ch\xE0o m\u1EEBng c\xE1c b\u1EA1n \u0111\u1EBFn v\u1EDBi \u0111\u1EC1 thi th\u1EED TOEIC trong ch\u01B0\u01A1ng tr\xECnh Luy\u1EC7n thi TOEIC online c\u1EE7a Ti\u1EBFngAnh123.Com! \u0110\xE2y l\xE0 b\xE0i thi m\xF4 ph\u1ECFng d\u1EA1ng \u0111\u1EC1 thi TOEIC th\u1EF1c t\u1EBF do \u0111\u1ED9i ng\u0169 gi\xE1o vi\xEAn c\u1EE7a Ti\u1EBFngAnh123.Com k\xEC c\xF4ng bi\xEAn so\u1EA1n. B\xE0i l\xE0m c\u1EE7a c\xE1c b\u1EA1n s\u1EBD \u0111\u01B0\u1EE3c ch\u1EA5m \u0111i\u1EC3m v\xE0 th\xF4ng b\xE1o k\u1EBFt qu\u1EA3 ngay sau khi c\xE1c b\u1EA1n n\u1ED9p b\xE0i.'
+              ),
+              _react2.default.createElement('div', { className: 'space20' }),
+              _react2.default.createElement(
+                'div',
+                { className: 'click_start' },
+                'B\u1EA1n h\xE3y click v\xE0o n\xFAt Start b\xEAn d\u01B0\u1EDBi \u0111\u1EC3 b\u1EAFt \u0111\u1EA7u l\xE0m b\xE0i. Ch\xFAc c\xE1c b\u1EA1n \u0111\u1EA1t \u0111i\u1EC3m s\u1ED1 th\u1EADt cao!'
+              ),
+              _react2.default.createElement('div', { className: 'space20' }),
+              _react2.default.createElement('button', { type: 'button', id: 'toeic_start', onClick: this.startCountDown })
+            )
+          )
+        );
+      }
+    }
+  }]);
+
+  return Timer;
+}(_react2.default.Component);
+
+module.exports = (0, _reactRedux.connect)(function (state) {
+  return {
+    submited: state.submited,
+    indexArray: state.indexArray,
+    testNumber: state.testNumber,
+    readScore: state.readScore,
+    listenScore: state.listenScore,
+    array: state.array,
+    numberDoTest: state.numberDoTest,
+    changeMinute: state.changeMinute,
+    changeSecond: state.changeSecond
+  };
+})(Timer);
+
+/***/ }),
+/* 191 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(6);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Time = function (_React$Component) {
+    _inherits(Time, _React$Component);
+
+    function Time() {
+        _classCallCheck(this, Time);
+
+        return _possibleConstructorReturn(this, (Time.__proto__ || Object.getPrototypeOf(Time)).apply(this, arguments));
+    }
+
+    _createClass(Time, [{
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement('img', { src: 'http://icons.iconarchive.com/icons/martz90/circle/256/timer-icon.png', className: 'img-timer' }),
+                _react2.default.createElement(
+                    'h1',
+                    null,
+                    this.props.minute,
+                    ' : ',
+                    this.props.second
+                )
+            );
+        }
+    }]);
+
+    return Time;
+}(_react2.default.Component);
+
+module.exports = Time;
+
+/***/ }),
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37945,33 +40598,37 @@ var _axios = __webpack_require__(14);
 
 var _axios2 = _interopRequireDefault(_axios);
 
-var _Part = __webpack_require__(166);
+var _Part = __webpack_require__(193);
 
 var _Part2 = _interopRequireDefault(_Part);
 
-var _Part3 = __webpack_require__(167);
+var _Part3 = __webpack_require__(194);
 
 var _Part4 = _interopRequireDefault(_Part3);
 
-var _Part5 = __webpack_require__(168);
+var _Part5 = __webpack_require__(195);
 
 var _Part6 = _interopRequireDefault(_Part5);
 
-var _Part7 = __webpack_require__(169);
+var _Part7 = __webpack_require__(196);
 
 var _Part8 = _interopRequireDefault(_Part7);
 
-var _Part9 = __webpack_require__(170);
+var _Part9 = __webpack_require__(197);
 
 var _Part10 = _interopRequireDefault(_Part9);
 
-var _Part11 = __webpack_require__(171);
+var _Part11 = __webpack_require__(198);
 
 var _Part12 = _interopRequireDefault(_Part11);
 
 var _Part13 = __webpack_require__(13);
 
 var _Part14 = _interopRequireDefault(_Part13);
+
+var _AnswerArray = __webpack_require__(199);
+
+var _AnswerArray2 = _interopRequireDefault(_AnswerArray);
 
 var _reactRedux = __webpack_require__(42);
 
@@ -38012,92 +40669,156 @@ var AllPart = function (_React$Component) {
       console.log(testNumber);
       console.log("indexArray while submit " + indexArray);
       _axios2.default.post('/submit', { array: array, indexArray: indexArray, testNumber: testNumber, numberDoTest: numberDoTest }).then(function (res) {
-        if (res.data.title == "NOT_DONE") {
-          console.log("Ban chua hoan thanh bai thi!");
-        } else {
-          dispatch({ type: 'SUBMITED' });
-          dispatch({ type: 'GET_LISTEN_SCORE', score: res.data.listeningScore });
-          dispatch({ type: 'GET_READ_SCORE', score: res.data.readingScore });
-          dispatch({ type: 'GET_BXH', bxh: res.data.BXH });
+        dispatch({ type: 'SUBMITED' });
+        dispatch({ type: 'GET_LISTEN_SCORE', score: res.data.listeningScore });
+        dispatch({ type: 'GET_READ_SCORE', score: res.data.readingScore });
+        dispatch({ type: 'GET_BXH', bxh: res.data.BXH });
+        dispatch({ type: 'COLOR_ANSWER' });
+      }).catch(function (err) {
+        return console.log(err);
+      });
+    }
+  }, {
+    key: 'handleSave',
+    value: function handleSave(e) {
+      var _props2 = this.props,
+          listenScore = _props2.listenScore,
+          readScore = _props2.readScore,
+          testNumber = _props2.testNumber;
+
+      e.preventDefault();
+      _axios2.default.post('/saveGrade', { listenScore: listenScore, readScore: readScore, testNumber: testNumber }).then(function (res) {
+        if (res.data.title == 'UPDATE') {
+          alert("Lưu thành công!");
         }
       }).catch(function (err) {
         return console.log(err);
       });
     }
   }, {
+    key: 'handleAnswer',
+    value: function handleAnswer(e) {
+      e.preventDefault();
+      var _props3 = this.props,
+          dispatch = _props3.dispatch,
+          seeAnswer = _props3.seeAnswer;
+
+      dispatch({ type: 'SEE_ANSWER' });
+    }
+  }, {
     key: 'render',
     value: function render() {
-      var _props2 = this.props,
-          submited = _props2.submited,
-          readScore = _props2.readScore,
-          listenScore = _props2.listenScore,
-          BXH = _props2.BXH;
+      var _props4 = this.props,
+          seeAnswer = _props4.seeAnswer,
+          submited = _props4.submited,
+          readScore = _props4.readScore,
+          listenScore = _props4.listenScore,
+          changeMinute = _props4.changeMinute,
+          changeSecond = _props4.changeSecond;
 
       var total = parseInt(readScore) + parseInt(listenScore);
+      var answer = seeAnswer == false ? null : _react2.default.createElement(_AnswerArray2.default, null);
       if (submited) {
         return _react2.default.createElement(
           'div',
           null,
           _react2.default.createElement(
-            'h2',
-            null,
-            'Your listening score is: ',
-            listenScore
-          ),
-          _react2.default.createElement(
-            'h2',
-            null,
-            'Your reading score is: ',
-            readScore
-          ),
-          _react2.default.createElement(
-            'h2',
-            null,
-            'Total: ',
-            total
-          ),
-          _react2.default.createElement(
             'div',
-            null,
+            { className: 'toda_box' },
             _react2.default.createElement(
-              'h2',
-              null,
-              'Bang xep hang'
-            ),
-            _react2.default.createElement(
-              'table',
-              null,
+              'div',
+              { className: 'toeic_result toda_ketqua_box' },
               _react2.default.createElement(
-                'tr',
-                null,
-                _react2.default.createElement(
-                  'th',
-                  null,
-                  'username'
-                ),
-                _react2.default.createElement(
-                  'th',
-                  null,
-                  'Score'
-                )
+                'div',
+                { className: 'toda_ketqua_title' },
+                'K\u1EBFt qu\u1EA3 b\xE0i thi'
               ),
-              BXH.map(function (e, i) {
-                return _react2.default.createElement(
-                  'tr',
-                  { key: i },
+              _react2.default.createElement(
+                'div',
+                { className: 'toda_ketqua_content' },
+                _react2.default.createElement(
+                  'div',
+                  { className: 'toda_ketqua_ct_left' },
                   _react2.default.createElement(
-                    'td',
-                    null,
-                    e.username,
-                    ' '
+                    'div',
+                    { className: 'toda_left_row' },
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'toda_left_row_l' },
+                      '\u0110i\u1EC3m thi ph\u1EA7n nghe :'
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'toda_left_row_r toeic_dl' },
+                      listenScore
+                    )
                   ),
                   _react2.default.createElement(
-                    'td',
-                    null,
-                    e.score
+                    'div',
+                    { className: 'toda_left_row' },
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'toda_left_row_l' },
+                      '\u0110i\u1EC3m thi ph\u1EA7n \u0111\u1ECDc :'
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'toda_left_row_r toeic_dr' },
+                      readScore
+                    )
+                  ),
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'toda_left_row' },
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'toda_left_row_l' },
+                      '\u0110i\u1EC3m b\xE0i thi :'
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'toda_left_row_r toeic_dt' },
+                      total
+                    )
+                  ),
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'toda_left_row' },
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'toda_left_row_l' },
+                      'Th\u1EDDi gian l\xE0m b\xE0i :'
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'toda_left_row_r toeic_t' },
+                      changeMinute,
+                      ' : ',
+                      changeSecond
+                    )
                   )
-                );
-              })
+                ),
+                _react2.default.createElement(
+                  'div',
+                  { className: 'toda_ketqua_ct_right' },
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'toda_bt_save', onClick: this.handleSave.bind(this) },
+                    'L\u01B0u \u0111i\u1EC3m'
+                  ),
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'toda_bt_save toda_bt_view', onClick: this.handleAnswer.bind(this) },
+                    'Xem \u0111\xE1p \xE1n'
+                  ),
+                  _react2.default.createElement('div', { className: 'loading' })
+                )
+              )
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'answer-detail' },
+              answer
             )
           )
         );
@@ -38129,14 +40850,29 @@ var AllPart = function (_React$Component) {
               'div',
               { className: 'clear_part' },
               ' ',
+              _react2.default.createElement(_Part6.default, null)
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'clear_part' },
+              ' ',
+              _react2.default.createElement(_Part8.default, null)
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'clear_part' },
+              ' ',
               _react2.default.createElement(_Part10.default, null)
             ),
-            _react2.default.createElement('div', null),
-            _react2.default.createElement('div', null),
-            _react2.default.createElement('div', null),
+            _react2.default.createElement(
+              'div',
+              { className: 'clear_part' },
+              ' ',
+              _react2.default.createElement(_Part12.default, null)
+            ),
             _react2.default.createElement(
               'button',
-              { className: 'button' },
+              { className: 'button button-submit' },
               'Submit'
             )
           )
@@ -38157,12 +40893,15 @@ module.exports = (0, _reactRedux.connect)(function (state) {
     submited: state.submited,
     username: state.username,
     BXH: state.BXH,
-    numberDoTest: state.numberDoTest
+    numberDoTest: state.numberDoTest,
+    seeAnswer: state.seeAnswer,
+    changeMinute: state.changeMinute,
+    changeSecond: state.changeSecond
   };
 })(AllPart);
 
 /***/ }),
-/* 166 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38258,7 +40997,12 @@ var Part2 = function (_Component) {
                 _react2.default.createElement(
                     'p',
                     { className: 'para' },
-                    'Directions: You will hear a question or statement and three responses spoken in English. They will not be printed in your test book and will be spoken only one time. Select the best response to the question or statement and mark the letter (A), (B), or (C) on your answer sheet.'
+                    _react2.default.createElement(
+                        'span',
+                        { className: 'direction-part' },
+                        'Directions '
+                    ),
+                    ': You will hear a question or statement and three responses spoken in English. They will not be printed in your test book and will be spoken only one time. Select the best response to the question or statement and mark the letter (A), (B), or (C) on your answer sheet.'
                 ),
                 this.state.data.map(function (da, i) {
                     return _react2.default.createElement(
@@ -38301,7 +41045,9 @@ var Part2 = function (_Component) {
         value: function componentDidMount() {
             var _this3 = this;
 
-            _axios2.default.get('/getPart2').then(function (res) {
+            var testNumber = this.props.testNumber;
+
+            _axios2.default.post('/getPart2', { testNumber: testNumber }).then(function (res) {
                 _this3.state = {
                     data: res.data,
                     test: res.data[0].test
@@ -38318,11 +41064,13 @@ var Part2 = function (_Component) {
 
 module.exports = (0, _reactRedux.connect)(function (state) {
     return { array: state.array,
-        indexArray: state.indexArray };
+        indexArray: state.indexArray,
+        testNumber: state.testNumber
+    };
 })(Part2);
 
 /***/ }),
-/* 167 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38419,51 +41167,67 @@ var Part3 = function (_Component) {
                 _react2.default.createElement(
                     'p',
                     { className: 'para' },
-                    'Directions: You will hear some conversations between two people. You will be asked to answer three questions about what the speakers say in each conversation. Select the best response to each question and mark the letter (A), (B), (C), or (D) on your answer sheet. The conversations will not be printed in your test book and will be spoken only one time.'
+                    _react2.default.createElement(
+                        'span',
+                        { className: 'direction-part' },
+                        'Directions '
+                    ),
+                    ': You will hear some conversations between two people. You will be asked to answer three questions about what the speakers say in each conversation. Select the best response to each question and mark the letter (A), (B), (C), or (D) on your answer sheet. The conversations will not be printed in your test book and will be spoken only one time.'
                 ),
                 this.state.data.map(function (da, i) {
                     return _react2.default.createElement(
                         'div',
-                        null,
+                        { key: i, className: 'container' },
+                        _react2.default.createElement(
+                            'p',
+                            { className: 'para' },
+                            da.refer
+                        ),
                         _react2.default.createElement(
                             'div',
-                            { key: da._id },
+                            { className: 'toeic_ques toeic_ques_col' },
                             _react2.default.createElement(
-                                'p',
-                                { className: 'para' },
-                                da.refer
+                                'div',
+                                { className: 'toeic_index1' },
+                                'C\xE2u ',
+                                da.number
                             ),
                             _react2.default.createElement(
                                 'div',
-                                { className: 'toeic_ques toeic_ques_col' },
-                                _react2.default.createElement(
-                                    'div',
-                                    { className: 'toeic_index1' },
-                                    'C\xE2u ',
-                                    da.number
-                                ),
-                                _react2.default.createElement(
-                                    'div',
-                                    { className: 'toeic_q_title' },
-                                    da.textQuestion
-                                )
+                                { className: 'toeic_q_title' },
+                                da.textQuestion
+                            )
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'wrapper-radiobuton' },
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'toeic_radio toeic_col' },
+                                _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'A', onChange: _this2.handleRadio }),
+                                da.radio1
                             ),
-                            _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'A', onChange: _this2.handleRadio }),
-                            da.radio1,
-                            ' ',
-                            _react2.default.createElement('br', null),
-                            _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'B', onChange: _this2.handleRadio }),
-                            da.radio2,
-                            _react2.default.createElement('br', null),
-                            _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'C', onChange: _this2.handleRadio }),
-                            da.radio3,
-                            ' ',
-                            _react2.default.createElement('br', null),
-                            _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'D', onChange: _this2.handleRadio }),
-                            da.radio4,
-                            ' ',
-                            _react2.default.createElement('br', null)
-                        )
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'toeic_radio toeic_col' },
+                                _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'B', onChange: _this2.handleRadio }),
+                                da.radio2
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'toeic_radio toeic_col' },
+                                _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'C', onChange: _this2.handleRadio }),
+                                da.radio3
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'toeic_radio toeic_col' },
+                                _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'D', onChange: _this2.handleRadio }),
+                                da.radio4,
+                                ' '
+                            )
+                        ),
+                        _react2.default.createElement('div', { className: 'space10 space11' })
                     );
                 })
             );
@@ -38473,7 +41237,9 @@ var Part3 = function (_Component) {
         value: function componentDidMount() {
             var _this3 = this;
 
-            _axios2.default.get('/getPart3').then(function (res) {
+            var testNumber = this.props.testNumber;
+
+            _axios2.default.post('/getPart3', { testNumber: testNumber }).then(function (res) {
                 _this3.state = {
                     data: res.data,
                     test: res.data[0].test // xem la de may de random de
@@ -38491,12 +41257,13 @@ var Part3 = function (_Component) {
 module.exports = (0, _reactRedux.connect)(function (state) {
     return {
         array: state.array,
-        indexArray: state.indexArray
+        indexArray: state.indexArray,
+        testNumber: state.testNumber
     };
 })(Part3);
 
 /***/ }),
-/* 168 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38541,7 +41308,8 @@ var Part4 = function (_Component) {
                 radio2: "",
                 radio3: "",
                 radio4: "",
-                number: ""
+                number: "",
+                refer: ""
             }],
             test: ""
         };
@@ -38591,39 +41359,68 @@ var Part4 = function (_Component) {
                 ),
                 _react2.default.createElement(
                     'p',
-                    null,
-                    'Directions: You will hear some talks given by a single speaker. You will be asked to answer three questions about what the speaker says in each talk. Select the best response to each question and mark the letter (A), (B), (C), or (D) on your answer sheet. The talks will not be printed in your test book and will be spoken only one time.'
+                    { className: 'para' },
+                    _react2.default.createElement(
+                        'span',
+                        { className: 'direction-part' },
+                        'Directions '
+                    ),
+                    ': You will hear some talks given by a single speaker. You will be asked to answer three questions about what the speaker says in each talk. Select the best response to each question and mark the letter (A), (B), (C), or (D) on your answer sheet. The talks will not be printed in your test book and will be spoken only one time.'
                 ),
                 this.state.data.map(function (da, i) {
                     return _react2.default.createElement(
                         'div',
-                        null,
+                        { key: i, className: 'container' },
+                        _react2.default.createElement(
+                            'p',
+                            { className: 'para' },
+                            da.refer
+                        ),
                         _react2.default.createElement(
                             'div',
-                            { key: da._id },
+                            { className: 'toeic_ques toeic_ques_col' },
                             _react2.default.createElement(
-                                'p',
-                                null,
-                                da.number,
-                                '.',
-                                da.textQuestion
+                                'div',
+                                { className: 'toeic_index1' },
+                                'C\xE2u ',
+                                da.number
                             ),
-                            _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'A', onChange: _this2.handleRadio }),
-                            da.radio1,
-                            ' ',
-                            _react2.default.createElement('br', null),
-                            _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'B', onChange: _this2.handleRadio }),
-                            da.radio2,
-                            _react2.default.createElement('br', null),
-                            _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'C', onChange: _this2.handleRadio }),
-                            da.radio3,
-                            ' ',
-                            _react2.default.createElement('br', null),
-                            _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'D', onChange: _this2.handleRadio }),
-                            da.radio4,
-                            ' ',
-                            _react2.default.createElement('br', null)
-                        )
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'toeic_q_title' },
+                                da.textQuestion
+                            )
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'wrapper-radiobuton' },
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'toeic_radio toeic_col' },
+                                _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'A', onChange: _this2.handleRadio }),
+                                da.radio1
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'toeic_radio toeic_col' },
+                                _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'B', onChange: _this2.handleRadio }),
+                                da.radio2
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'toeic_radio toeic_col' },
+                                _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'C', onChange: _this2.handleRadio }),
+                                da.radio3
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'toeic_radio toeic_col' },
+                                _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'D', onChange: _this2.handleRadio }),
+                                da.radio4,
+                                ' '
+                            )
+                        ),
+                        _react2.default.createElement('div', { className: 'space10 space11' })
                     );
                 })
             );
@@ -38633,7 +41430,9 @@ var Part4 = function (_Component) {
         value: function componentDidMount() {
             var _this3 = this;
 
-            _axios2.default.get('/getPart4').then(function (res) {
+            var testNumber = this.props.testNumber;
+
+            _axios2.default.post('/getPart4', { testNumber: testNumber }).then(function (res) {
                 _this3.state = {
                     data: res.data,
                     test: res.data[0].test // xem la de may de random de
@@ -38651,12 +41450,13 @@ var Part4 = function (_Component) {
 module.exports = (0, _reactRedux.connect)(function (state) {
     return {
         array: state.array,
-        indexArray: state.indexArray
+        indexArray: state.indexArray,
+        testNumber: state.testNumber
     };
 })(Part4);
 
 /***/ }),
-/* 169 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38746,13 +41546,13 @@ var Part5 = function (_Component) {
                 null,
                 _react2.default.createElement('hr', null),
                 _react2.default.createElement(
-                    'h2',
+                    'h1',
                     null,
                     'READING TEST'
                 ),
                 _react2.default.createElement(
                     'p',
-                    null,
+                    { className: 'para' },
                     'In the Reading test, you will read a variety of texts and answer several different types of reading comprehension questions. The entire Reading test will last 75 minutes. There are three parts, and directions are given for each part. You are encouraged to answer as many questions as possible within the time allowed. You must mark your answers on the separate answer sheet. Do not write your answers in your test book. '
                 ),
                 _react2.default.createElement(
@@ -38762,39 +41562,63 @@ var Part5 = function (_Component) {
                 ),
                 _react2.default.createElement(
                     'p',
-                    null,
-                    'Directions: A word or phrase is missing in each of the sentences below. Four answer choices are given below each sentence. Select the best answer to complete the sentence. Then mark the letter (A), (B), (C), or (D) on your answer sheet.'
+                    { className: 'para' },
+                    _react2.default.createElement(
+                        'span',
+                        { className: 'direction-part' },
+                        'Directions '
+                    ),
+                    ': A word or phrase is missing in each of the sentences below. Four answer choices are given below each sentence. Select the best answer to complete the sentence. Then mark the letter (A), (B), (C), or (D) on your answer sheet.'
                 ),
                 this.state.data.map(function (da, i) {
                     return _react2.default.createElement(
                         'div',
-                        null,
+                        { key: i, className: 'container' },
                         _react2.default.createElement(
                             'div',
-                            { key: da._id },
+                            { className: 'toeic_ques toeic_ques_col' },
                             _react2.default.createElement(
-                                'p',
-                                null,
-                                da.number,
-                                '.',
-                                da.textQuestion
+                                'div',
+                                { className: 'toeic_index1' },
+                                'C\xE2u ',
+                                da.number
                             ),
-                            _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'A', onChange: _this2.handleRadio }),
-                            da.radio1,
-                            ' ',
-                            _react2.default.createElement('br', null),
-                            _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'B', onChange: _this2.handleRadio }),
-                            da.radio2,
-                            _react2.default.createElement('br', null),
-                            _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'C', onChange: _this2.handleRadio }),
-                            da.radio3,
-                            ' ',
-                            _react2.default.createElement('br', null),
-                            _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'D', onChange: _this2.handleRadio }),
-                            da.radio4,
-                            ' ',
-                            _react2.default.createElement('br', null)
-                        )
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'toeic_q_title' },
+                                da.textQuestion
+                            )
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'wrapper-radiobuton' },
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'toeic_radio toeic_col' },
+                                _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'A', onChange: _this2.handleRadio }),
+                                da.radio1
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'toeic_radio toeic_col' },
+                                _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'B', onChange: _this2.handleRadio }),
+                                da.radio2
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'toeic_radio toeic_col' },
+                                _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'C', onChange: _this2.handleRadio }),
+                                da.radio3
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'toeic_radio toeic_col' },
+                                _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'D', onChange: _this2.handleRadio }),
+                                da.radio4,
+                                ' '
+                            )
+                        ),
+                        _react2.default.createElement('div', { className: 'space10 space11' })
                     );
                 })
             );
@@ -38804,7 +41628,9 @@ var Part5 = function (_Component) {
         value: function componentDidMount() {
             var _this3 = this;
 
-            _axios2.default.get('/getPart5').then(function (res) {
+            var testNumber = this.props.testNumber;
+
+            _axios2.default.post('/getPart5', { testNumber: testNumber }).then(function (res) {
                 _this3.state = {
                     data: res.data,
                     test: res.data[0].test // xem la de may de random de
@@ -38822,12 +41648,13 @@ var Part5 = function (_Component) {
 module.exports = (0, _reactRedux.connect)(function (state) {
     return {
         array: state.array,
-        indexArray: state.indexArray
+        indexArray: state.indexArray,
+        testNumber: state.testNumber
     };
 })(Part5);
 
 /***/ }),
-/* 170 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38924,12 +41751,17 @@ var Part6 = function (_Component) {
                 _react2.default.createElement(
                     'p',
                     { className: 'para' },
-                    'Directions: Read the texts that follow. A word or phrase is missing in some of the sentences. Four answer choices are given below each of the sentences. Select the best answer to complete the text. Then mark the letter (A), (B), (C), or (D) on your answer sheet.'
+                    _react2.default.createElement(
+                        'span',
+                        { className: 'direction-part' },
+                        'Directions '
+                    ),
+                    ': Read the texts that follow. A word or phrase is missing in some of the sentences. Four answer choices are given below each of the sentences. Select the best answer to complete the text. Then mark the letter (A), (B), (C), or (D) on your answer sheet.'
                 ),
                 this.state.data.map(function (da, i) {
                     return _react2.default.createElement(
                         'div',
-                        { key: i },
+                        { key: i, className: 'container' },
                         _react2.default.createElement(
                             'p',
                             { className: 'para' },
@@ -38937,30 +41769,49 @@ var Part6 = function (_Component) {
                         ),
                         _react2.default.createElement(
                             'div',
-                            { className: 'para' },
-                            da.textQuestion
+                            { className: 'toeic_ques toeic_ques_col' },
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'toeic_index1' },
+                                'C\xE2u ',
+                                da.number
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'toeic_q_title1' },
+                                da.textQuestion
+                            )
                         ),
                         _react2.default.createElement(
-                            'p',
-                            null,
-                            da.number,
-                            '.'
+                            'div',
+                            { className: 'wrapper-radiobuton' },
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'toeic_radio toeic_col' },
+                                _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'A', onChange: _this2.handleRadio }),
+                                da.radio1
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'toeic_radio toeic_col' },
+                                _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'B', onChange: _this2.handleRadio }),
+                                da.radio2
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'toeic_radio toeic_col' },
+                                _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'C', onChange: _this2.handleRadio }),
+                                da.radio3
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'toeic_radio toeic_col' },
+                                _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'D', onChange: _this2.handleRadio }),
+                                da.radio4,
+                                ' '
+                            )
                         ),
-                        _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'A', onChange: _this2.handleRadio }),
-                        da.radio1,
-                        ' ',
-                        _react2.default.createElement('br', null),
-                        _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'B', onChange: _this2.handleRadio }),
-                        da.radio2,
-                        _react2.default.createElement('br', null),
-                        _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'C', onChange: _this2.handleRadio }),
-                        da.radio3,
-                        ' ',
-                        _react2.default.createElement('br', null),
-                        _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'D', onChange: _this2.handleRadio }),
-                        da.radio4,
-                        ' ',
-                        _react2.default.createElement('br', null)
+                        _react2.default.createElement('div', { className: 'space10 space11' })
                     );
                 })
             );
@@ -38970,7 +41821,9 @@ var Part6 = function (_Component) {
         value: function componentDidMount() {
             var _this3 = this;
 
-            _axios2.default.get('/getPart6').then(function (res) {
+            var testNumber = this.props.testNumber;
+
+            _axios2.default.post('/getPart6', { testNumber: testNumber }).then(function (res) {
                 _this3.state = {
                     data: res.data,
                     test: res.data[0].test // xem la de may de random de
@@ -38988,12 +41841,13 @@ var Part6 = function (_Component) {
 module.exports = (0, _reactRedux.connect)(function (state) {
     return {
         array: state.array,
-        indexArray: state.indexArray
+        indexArray: state.indexArray,
+        testNumber: state.testNumber
     };
 })(Part6);
 
 /***/ }),
-/* 171 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39039,7 +41893,8 @@ var Part7 = function (_Component) {
                 radio3: "",
                 radio4: "",
                 number: "",
-                textAfterNumber: ""
+                textAfterNumber: "",
+                refer: ""
             }],
             test: ""
         };
@@ -39089,49 +41944,68 @@ var Part7 = function (_Component) {
                 ),
                 _react2.default.createElement(
                     'p',
-                    null,
-                    'Directions: In this part you will read a selection of texts, such as magazine and newspaper articles, letters, and advertisements. Each text is followed by several questions. Select the best answer for each question and mark the letter (A), (B), (C), or (D) on your answer sheet.'
+                    { className: 'para' },
+                    _react2.default.createElement(
+                        'span',
+                        { className: 'direction-part' },
+                        'Directions '
+                    ),
+                    ': In this part you will read a selection of texts, such as magazine and newspaper articles, letters, and advertisements. Each text is followed by several questions. Select the best answer for each question and mark the letter (A), (B), (C), or (D) on your answer sheet.'
                 ),
                 this.state.data.map(function (da, i) {
                     return _react2.default.createElement(
                         'div',
-                        null,
+                        { key: i, className: 'container' },
+                        _react2.default.createElement(
+                            'p',
+                            { className: 'para' },
+                            da.refer
+                        ),
                         _react2.default.createElement(
                             'div',
-                            { key: da._id },
+                            { className: 'toeic_ques toeic_ques_col' },
                             _react2.default.createElement(
-                                'p',
-                                null,
-                                da.refer
+                                'div',
+                                { className: 'toeic_index1' },
+                                'C\xE2u ',
+                                da.number
                             ),
                             _react2.default.createElement(
                                 'div',
-                                { className: 'para' },
+                                { className: 'toeic_q_title1' },
                                 da.textQuestion
+                            )
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'wrapper-radiobuton' },
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'toeic_radio toeic_col' },
+                                _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'A', onChange: _this2.handleRadio }),
+                                da.radio1
                             ),
                             _react2.default.createElement(
-                                'p',
-                                null,
-                                da.number,
-                                '. ',
-                                da.textAfterNumber
+                                'div',
+                                { className: 'toeic_radio toeic_col' },
+                                _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'B', onChange: _this2.handleRadio }),
+                                da.radio2
                             ),
-                            _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'A', onChange: _this2.handleRadio }),
-                            da.radio1,
-                            ' ',
-                            _react2.default.createElement('br', null),
-                            _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, checked: '', value: 'B', onChange: _this2.handleRadio }),
-                            da.radio2,
-                            _react2.default.createElement('br', null),
-                            _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'C', onChange: _this2.handleRadio }),
-                            da.radio3,
-                            ' ',
-                            _react2.default.createElement('br', null),
-                            _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'D', onChange: _this2.handleRadio }),
-                            da.radio4,
-                            ' ',
-                            _react2.default.createElement('br', null)
-                        )
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'toeic_radio toeic_col' },
+                                _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'C', onChange: _this2.handleRadio }),
+                                da.radio3
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'toeic_radio toeic_col' },
+                                _react2.default.createElement('input', { type: 'radio', name: da.number, id: da.number, value: 'D', onChange: _this2.handleRadio }),
+                                da.radio4,
+                                ' '
+                            )
+                        ),
+                        _react2.default.createElement('div', { className: 'space10 space11' })
                     );
                 })
             );
@@ -39141,7 +42015,9 @@ var Part7 = function (_Component) {
         value: function componentDidMount() {
             var _this3 = this;
 
-            _axios2.default.get('/getPart7').then(function (res) {
+            var testNumber = this.props.testNumber;
+
+            _axios2.default.post('/getPart7', { testNumber: testNumber }).then(function (res) {
                 _this3.state = {
                     data: res.data,
                     test: res.data[0].test // xem la de may de random de
@@ -39159,12 +42035,13 @@ var Part7 = function (_Component) {
 module.exports = (0, _reactRedux.connect)(function (state) {
     return {
         array: state.array,
-        indexArray: state.indexArray
+        indexArray: state.indexArray,
+        testNumber: state.testNumber
     };
 })(Part7);
 
 /***/ }),
-/* 172 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39179,214 +42056,12 @@ var _react2 = _interopRequireDefault(_react);
 var _reactDom = __webpack_require__(6);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
-
-var _Time = __webpack_require__(173);
-
-var _Time2 = _interopRequireDefault(_Time);
-
-var _AllPart = __webpack_require__(165);
-
-var _AllPart2 = _interopRequireDefault(_AllPart);
-
-var _Container = __webpack_require__(151);
-
-var _Container2 = _interopRequireDefault(_Container);
-
-var _Part = __webpack_require__(13);
-
-var _Part2 = _interopRequireDefault(_Part);
-
-var _reactRedux = __webpack_require__(42);
 
 var _axios = __webpack_require__(14);
 
 var _axios2 = _interopRequireDefault(_axios);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Timer = function (_React$Component) {
-  _inherits(Timer, _React$Component);
-
-  function Timer(props) {
-    _classCallCheck(this, Timer);
-
-    var _this = _possibleConstructorReturn(this, (Timer.__proto__ || Object.getPrototypeOf(Timer)).call(this, props));
-
-    _this.state = {
-      second: '00',
-      minute: '120',
-      started: false
-    };
-    _this.secondsRemaining;
-    _this.intervalHandle;
-    _this.startCountDown = _this.startCountDown.bind(_this);
-    _this.tick = _this.tick.bind(_this);
-
-    return _this;
-  }
-
-  _createClass(Timer, [{
-    key: 'tick',
-    value: function tick() {
-      var _props = this.props,
-          submited = _props.submited,
-          indexArray = _props.indexArray,
-          array = _props.array,
-          testNumber = _props.testNumber,
-          dispatch = _props.dispatch,
-          numberDoTest = _props.numberDoTest;
-
-      if (submited) clearInterval(this.intervalHandle);
-      var min = Math.floor(this.secondsRemaining / 60);
-      var sec = this.secondsRemaining - min * 60;
-      this.setState({
-        minute: min,
-        second: sec
-      });
-      if (sec < 10) {
-        this.setState({
-          second: "0" + this.state.second
-        });
-      }
-      if (min < 10) {
-        this.setState({
-          minute: "0" + min
-        });
-      }
-      if (min === 0 & sec === 30) {
-        clearInterval(this.intervalHandle);
-        alert("het time!");
-        _axios2.default.post('./submit', { array: array, indexArray: indexArray, testNumber: testNumber, numberDoTest: numberDoTest }).then(function (res) {
-          console.log(res.data.BXH.length);
-          dispatch({ type: 'SUBMITED' });
-          dispatch({ type: 'GET_LISTEN_SCORE', score: res.data.listeningScore });
-          dispatch({ type: 'GET_READ_SCORE', score: res.data.readingScore });
-          dispatch({ type: 'GET_BXH', bxh: res.data.BXH });
-        }).catch(function (err) {
-          return console.log(err);
-        });
-      }
-      this.secondsRemaining--;
-    }
-  }, {
-    key: 'startCountDown',
-    value: function startCountDown() {
-      this.intervalHandle = setInterval(this.tick, 1000);
-      var time = this.state.minute;
-      this.secondsRemaining = time * 60;
-      this.setState({ started: true });
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var submited = this.props.submited;
-
-      var html = submited == false ? _react2.default.createElement(_Time2.default, { minute: this.state.minute, second: this.state.second }) : null;
-      if (this.state.started) {
-        return _react2.default.createElement(
-          'div',
-          null,
-          html,
-          _react2.default.createElement(_AllPart2.default, null)
-        );
-      } else {
-        return _react2.default.createElement(
-          'div',
-          null,
-          _react2.default.createElement(
-            'div',
-            { className: 'text-center' },
-            _react2.default.createElement('img', { src: 'http://icons.iconarchive.com/icons/martz90/circle/256/timer-icon.png', className: 'img-timer' }),
-            _react2.default.createElement(_Time2.default, { minute: this.state.minute, second: this.state.second })
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'comment_bai_hoc clear' },
-            _react2.default.createElement(
-              'div',
-              { className: 'ghichu0 clear bo_goc' },
-              _react2.default.createElement(
-                'h1',
-                { className: 'title_lesson' },
-                'TOEIC Full Test 1'
-              )
-            )
-          ),
-          _react2.default.createElement('br', null),
-          _react2.default.createElement(
-            'div',
-            { className: 'details' },
-            _react2.default.createElement('span', { id: 'fulltest' }),
-            _react2.default.createElement(
-              'div',
-              { className: 'toeic_box_start' },
-              _react2.default.createElement(
-                'h2',
-                { className: 'gthieu' },
-                'Ng\u01B0\u1EDDi h\u1ECDc l\xE0m b\xE0i thi m\xF4 ph\u1ECFng b\xE0i thi TOEIC th\u1EF1c t\u1EBF. B\xE0i thi ch\u1EC9 c\xF3 tr\xEAn TiengAnh123.Com!'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'toeic_title' },
-                'Full Test 1'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'toeic_content_start' },
-                'Ch\xE0o m\u1EEBng c\xE1c b\u1EA1n \u0111\u1EBFn v\u1EDBi \u0111\u1EC1 thi th\u1EED TOEIC trong ch\u01B0\u01A1ng tr\xECnh Luy\u1EC7n thi TOEIC online c\u1EE7a Ti\u1EBFngAnh123.Com! \u0110\xE2y l\xE0 b\xE0i thi m\xF4 ph\u1ECFng d\u1EA1ng \u0111\u1EC1 thi TOEIC th\u1EF1c t\u1EBF do \u0111\u1ED9i ng\u0169 gi\xE1o vi\xEAn c\u1EE7a Ti\u1EBFngAnh123.Com k\xEC c\xF4ng bi\xEAn so\u1EA1n. B\xE0i l\xE0m c\u1EE7a c\xE1c b\u1EA1n s\u1EBD \u0111\u01B0\u1EE3c ch\u1EA5m \u0111i\u1EC3m v\xE0 th\xF4ng b\xE1o k\u1EBFt qu\u1EA3 ngay sau khi c\xE1c b\u1EA1n n\u1ED9p b\xE0i.'
-              ),
-              _react2.default.createElement('div', { className: 'space20' }),
-              _react2.default.createElement(
-                'div',
-                { className: 'click_start' },
-                'B\u1EA1n h\xE3y click v\xE0o n\xFAt Start b\xEAn d\u01B0\u1EDBi \u0111\u1EC3 b\u1EAFt \u0111\u1EA7u l\xE0m b\xE0i. Ch\xFAc c\xE1c b\u1EA1n \u0111\u1EA1t \u0111i\u1EC3m s\u1ED1 th\u1EADt cao!'
-              ),
-              _react2.default.createElement('div', { className: 'space20' }),
-              _react2.default.createElement('button', { type: 'button', id: 'toeic_start', onClick: this.startCountDown })
-            )
-          )
-        );
-      }
-    }
-  }]);
-
-  return Timer;
-}(_react2.default.Component);
-
-module.exports = (0, _reactRedux.connect)(function (state) {
-  return {
-    submited: state.submited,
-    indexArray: state.indexArray,
-    testNumber: state.testNumber,
-    readScore: state.readScore,
-    listenScore: state.listenScore,
-    array: state.array,
-    numberDoTest: state.numberDoTest
-  };
-})(Timer);
-
-/***/ }),
-/* 173 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(1);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = __webpack_require__(6);
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
+var _reactRedux = __webpack_require__(42);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -39396,36 +42071,101 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Time = function (_React$Component) {
-    _inherits(Time, _React$Component);
+var AnswerArray = function (_React$Component) {
+    _inherits(AnswerArray, _React$Component);
 
-    function Time() {
-        _classCallCheck(this, Time);
+    function AnswerArray(props) {
+        _classCallCheck(this, AnswerArray);
 
-        return _possibleConstructorReturn(this, (Time.__proto__ || Object.getPrototypeOf(Time)).apply(this, arguments));
+        var _this = _possibleConstructorReturn(this, (AnswerArray.__proto__ || Object.getPrototypeOf(AnswerArray)).call(this, props));
+
+        _this.state = {
+            Array: []
+        };
+        return _this;
     }
 
-    _createClass(Time, [{
+    _createClass(AnswerArray, [{
         key: 'render',
         value: function render() {
             return _react2.default.createElement(
                 'div',
                 null,
                 _react2.default.createElement(
-                    'h1',
+                    'table',
                     null,
-                    this.props.minute,
-                    ' : ',
-                    this.props.second
+                    _react2.default.createElement(
+                        'tr',
+                        null,
+                        _react2.default.createElement(
+                            'th',
+                            null,
+                            'C\xE2u '
+                        ),
+                        _react2.default.createElement(
+                            'th',
+                            null,
+                            '\u0110\xE1p \xE1n b\u1EA1n ch\u1ECDn'
+                        ),
+                        _react2.default.createElement(
+                            'th',
+                            null,
+                            '\u0110\xE1p \xE1n \u0111\xFAng'
+                        )
+                    ),
+                    this.state.Array.map(function (e, i) {
+                        return _react2.default.createElement(
+                            'tr',
+                            null,
+                            _react2.default.createElement(
+                                'td',
+                                null,
+                                parseInt(i) + 1
+                            ),
+                            _react2.default.createElement(
+                                'td',
+                                null,
+                                e.value
+                            ),
+                            _react2.default.createElement(
+                                'td',
+                                null,
+                                e.answer
+                            )
+                        );
+                    })
                 )
             );
         }
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            var _this2 = this;
+
+            var _props = this.props,
+                testNumber = _props.testNumber,
+                array = _props.array;
+
+            _axios2.default.post('/getAnswer', { testNumber: testNumber, array: array }).then(function (res) {
+                _this2.state = {
+                    Array: res.data.Array
+                };
+                _this2.setState(_this2.state);
+            }).catch(function (err) {
+                return console.log(err);
+            });
+        }
     }]);
 
-    return Time;
+    return AnswerArray;
 }(_react2.default.Component);
 
-module.exports = Time;
+module.exports = (0, _reactRedux.connect)(function (state) {
+    return {
+        testNumber: state.testNumber,
+        array: state.array
+    };
+})(AnswerArray);
 
 /***/ })
 /******/ ]);

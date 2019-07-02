@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
+import Picture from './Picture';
 var {Link, IndexLink} = require('react-router');
 class NotUser extends React.Component{
   handleSignIn(){
@@ -17,43 +18,19 @@ class NotUser extends React.Component{
                 <nav className="navbar navbar-inverse">
             <div className="container">
               <div className="navbar-header">
-                <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                  <span className="sr-only">Toggle navigation</span>
-                  <span className="icon-bar"></span>
-                  <span className="icon-bar"></span>
-                  <span className="icon-bar"></span>
-                </button>
-                <a  className="active" className="navbar-brand" href="#">English123.com</a>
+               <a href="#"><img className="navbar-brand" width="400" height="150" src="https://data.tienganh123.com/images/v2/home/logo.png" /></a> 
               </div>
       
               <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul className="nav navbar-nav">
-                  <li ><IndexLink to="/signin" onClick={this.handleSignIn.bind(this)}>SignIn <span className="sr-only">(current)</span></IndexLink></li>
-                  <li ><Link to="/signup" onClick={this.handleSignUp.bind(this)}>SignUp</Link></li>
-                  <li className="dropdown">
-                    <Link href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span className="caret"></span></Link>
-                    <ul className="dropdown-menu">
-                      <li><a href="#">Action</a></li>
-                      <li><a href="#">Another action</a></li>
-                      <li><a href="#">Something else here</a></li>
-                      <li role="separator" className="divider"></li>
-                      <li><a href="#">Separated link</a></li>
-                      <li role="separator" className="divider"></li>
-                      <li><a href="#">One more separated link</a></li>
-                    </ul>
-                  </li>
-                </ul>
+                  <li ><button className="btn-header"><img width='20' height="20" src="https://image.flaticon.com/icons/png/128/1250/1250659.png"/><IndexLink to="/signin" className='link' onClick={this.handleSignIn.bind(this)}>SignIn <span className="sr-only">(current)</span></IndexLink></button></li>
+                  <li ><button className="btn-header"><img width='20' height="20" src="https://cdn3.iconfinder.com/data/icons/user-interface-2-9/34/169-512.png"/><Link to="/signup" className='link' onClick={this.handleSignUp.bind(this)}>SignUp</Link></button></li>
+                </ul> 
               </div>
               
             </div>
           </nav>
-          <div className="jumbotron text-center">
-                <div className="container">
-                  <h1>Welcome To My Website</h1>
-                  <p>English - Open Your World</p>
-                  <a href="#" className="btn btn-primary">Read More</a>
-                </div>
-              </div>
+            <Picture />
             </div>
         )
     }
